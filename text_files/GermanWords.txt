@@ -1,0 +1,6 @@
+
+Schichtdienst - Arbeitnehmer arbeiten zu verschiedenen Zeiten. Ein Arbeitsplatz wird im Laufe des Tages, von mehreren Mitarbeitern nacheinander besetzt.
+
+Kunde - eine Person, die Ware kauft oder eine Dienstleistung erhält
+
+Gast - Person, die für Geld oder ohne Geld (unentgeltlich) beherbergt wird
