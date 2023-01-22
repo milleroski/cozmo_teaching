@@ -2,6 +2,7 @@ import cozmo
 import vosk
 import pyaudio
 import json
+import random
 from Dictionary import load_dictionary
 
 
@@ -26,21 +27,22 @@ def get_words(recognizer, stream):
 #     for word in word_list:
 #         check_answer(text, word)
 
-def check_answer(text, word):
-    text_list = text.split()
-    correct_answer = False
+def check_answer(text, phrase):
+    if phrase in text:
+        return True
 
-    for text_word in text_list:
-        if text_word == word.casefold():
-            correct_answer = True
-            break
+    return False
 
-    return correct_answer
+
+def say_text(text, robot):
+    robot.say_text(text, duration_scalar=0.7).wait_for_completed()
 
 
 def cozmo_program(robot: cozmo.robot.Robot):
-
     # Move Cozmo's head up and the lift down
+    print("current battery voltage: " + str(robot.battery_voltage) + "V")
+
+    robot.set_robot_volume(0.2)
     robot.move_lift(-3)
     robot.set_head_angle(cozmo.robot.MAX_HEAD_ANGLE).wait_for_completed()  # This doesn't work sometimes?
 
@@ -49,13 +51,18 @@ def cozmo_program(robot: cozmo.robot.Robot):
     dict_keys = list(dictionary.keys())
     dict_length = len(dictionary)
 
+    # Lists of good, bad, and neutral animations
+    bad_animations = [4, 5, 17, 21, 25, 27, 54, 63, 64, 65]
+    neutral_animations = [3, 18, 22, 40, 51, 58, 61, 77, 78, 80]
+    good_animations = [1, 7, 23, 26, 30, 31, 35, 50, 57, 68]
+
     # Vocabulary that the user is likely to use, otherwise vosk will very likely misinterpret it
     confirmation_words = ["yes", "no", "yeah", "nope", "sure", "correct"]
     vocabulary = json.dumps(dict_keys + confirmation_words)
     print(vocabulary)
 
     # Load in the vosk model
-    model = vosk.Model(r"Model\vosk-model-small-en-us-0.15")
+    model = vosk.Model(r"D:\Programming\CozmoSDK\cozmo_teaching\Model\vosk-model-small-en-us-0.15")
     recognizer = vosk.KaldiRecognizer(model, 16000, vocabulary)
 
     # Take microphone input
@@ -64,7 +71,7 @@ def cozmo_program(robot: cozmo.robot.Robot):
     stream.start_stream()
 
     try_again_flag = False
-    repeat_definition_flag = True
+    repeat_definition_flag = False
     counter = 0
     # Read and interpret words -- if successful, Cozmo repeats what you just said
     while counter < dict_length:
@@ -73,18 +80,19 @@ def cozmo_program(robot: cozmo.robot.Robot):
         definition = dictionary.get(dict_keys[counter])[0]
         word = dict_keys[counter]
 
-        robot.say_text(definition).wait_for_completed()
+        say_text(definition, robot)
 
         while not correct:
 
             text = get_text_from_audio(stream, recognizer)
 
+            print(text)
             # This code feels like it's garbage
             # If the try_again_flag is set, make user stuck in the first part of the loop until he says yes or no
             if try_again_flag:
                 if text == 'yes':
                     try_again_flag = False
-                    robot.say_text("Do you want to hear the definition again?").wait_for_completed()
+                    say_text("Do you want to hear the definition again?", robot)
                     repeat_definition_flag = True
                     continue
                 elif text == 'no':
@@ -96,9 +104,12 @@ def cozmo_program(robot: cozmo.robot.Robot):
             if repeat_definition_flag:
                 if text == 'yes':
                     repeat_definition_flag = False
-                    robot.say_text(definition).wait_for_completed()
+                    say_text(definition, robot)
+                    continue
                 elif text == 'no':
+                    say_text("Alright. You may speak now.", robot)
                     repeat_definition_flag = False
+                    continue
                 else:
                     continue
 
@@ -111,79 +122,41 @@ def cozmo_program(robot: cozmo.robot.Robot):
                 correct = check_answer(text, word)
 
                 if correct:
-                    robot.say_text("Correct! Good Job!", play_excited_animation=True).wait_for_completed()
-
+                    say_text("Correct! Good Job!", robot)
+                    robot.play_anim_trigger(
+                        robot.anim_triggers[good_animations[random.randint(0, 9)]]).wait_for_completed()
 
                 if not correct:
-                    robot.say_text("That is not correct.").wait_for_completed()
+                    say_text("That is not correct.", robot)
+                    robot.play_anim_trigger(
+                        robot.anim_triggers[bad_animations[random.randint(0, 9)]]).wait_for_completed()
                     try_again_flag = True
-                    robot.say_text("Would you like to try again?").wait_for_completed()
-                    # TODO: Check for actual answer, likely a boolean flag needed.
+                    say_text("Would you like to try again?", robot)
 
         counter += 1
 
-    robot.say_text(
-        "We are now done with the vocabulary training. Please say [word] to continue to the dialogue training.").wait_for_completed()
+    say_text(
+        "We are now done with the vocabulary training. Please say [word] to continue to the dialogue training.", robot)
 
     # TODO: Alternative code structure, ask for confirmation at the name and gender section separately instead of at the end?
-    correct = False
 
-    ###################### Is this really necessary? #################################
-    name = ""
-    anrede = ""
-    ###################### Is this really necessary? #################################
-    while not correct:
-
-        robot.say_text("Ich heiße Frau Meier in diesem Szenario, wie heißen Sie?").wait_for_completed()
-
-        name = get_words(recognizer, stream)
-
-        robot.say_text("Soll ich Sie mit Herr oder Frau anreden?").wait_for_completed()
-
-        # The only possible answers here are "Herr" or "Frau", nothing else is accepted. A bit close-minded?
-        while True:
-            anrede = get_text_from_audio(stream, recognizer)
-
-            herr = check_answer(anrede, "herr")
-            frau = check_answer(anrede, "frau")
-
-            if herr or frau:
-                break
-            else:
-                robot.say_text("Entschuldigung, ich habe das nicht verstanden. Können Sie es nochmal wiederholen?")
-
-        robot.say_text("Danke. Also Sie heißen {} {}. Ist das richtig?".format(anrede, name)).wait_for_completed()
-
-        while True:
-            text = get_text_from_audio(stream, recognizer)
-
-            # Check if answer includes "ja" or "nein"
-            ja = check_answer(text, "ja")
-            nein = check_answer(text, "nein")
-
-            if ja:
-                correct = True
-                break
-            elif nein:
-                correct = False
-                break
-
-    robot.say_text("Ok, dann fangen wir an.").wait_for_completed()
+    say_text("Ok, let's get started then.", robot)
 
     lines = [
-        "Guten Tag {} {}. Ich bin Frau Meier die Personalchefin. Ich werde heute mit Ihnen das Interview durchführen.".format(
-            anrede, name),
-        "Warum möchten Sie ausgerechnet bei uns arbeiten?",
-        "Warum meinen Sie, dass Sie für diese Stelle geeignet sind?",
-        "Welche Fremdsprachenkenntnisse haben Sie?",
-        "Sie sprechen gut Deutsch. Aber können Sie auch Deutsch schreiben?",
-        "Was sind Ihre persönlichen Stärken?",
-        "Wie sehen Sie Ihre berufliche Zukunft?",
-        "Vielen Dank {} {}, ich werde Sie in 2 Tagen anrufen. Vielen Dank. Auf Wiedersehen.".format(anrede, name)]
+        "ring ring...ring ring...ring ring...",
+        "Yes, this is Cozmo calling. May I speak to Mr. Franks, please?",
+        "Uhm...actually, this call is rather urgent. We spoke yesterday about a delivery problem that Mr. Franks "
+        "mentioned. Did he leave any information with you?",
+        "Yes, the shipment was delayed from France. But it is on the way now. Could I schedule a meeting with Mr. "
+        "Frank on Thursday afternoon?",
+        "Unfortunately, that doesn't suit me. Is he doing anything on Friday morning?",
+        "Great, should I come by at 9?",
+        "Yes, 10 would be great.",
+        "No, I think that's everything. Thank you for your help...Goodbye."]
 
     for line in lines:
         print(line)
-        robot.say_text(line).wait_for_completed()
+        say_text(line, robot)
 
         something_said = False
         stopped_talking = False
@@ -194,6 +167,7 @@ def cozmo_program(robot: cozmo.robot.Robot):
 
             if text:
                 something_said = True
+
             elif something_said:
                 stopped_talking = True
 
