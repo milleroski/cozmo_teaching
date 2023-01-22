@@ -50,7 +50,7 @@ def cozmo_program(robot: cozmo.robot.Robot):
     dict_length = len(dictionary)
 
     # Vocabulary that the user is likely to use, otherwise vosk will very likely misinterpret it
-    confirmation_words =["yes", "no", "yeah", "nope", "sure", "correct"]
+    confirmation_words = ["yes", "no", "yeah", "nope", "sure", "correct"]
     vocabulary = json.dumps(dict_keys + confirmation_words)
     print(vocabulary)
 
@@ -111,7 +111,8 @@ def cozmo_program(robot: cozmo.robot.Robot):
                 correct = check_answer(text, word)
 
                 if correct:
-                    robot.say_text("Correct! Good Job!").wait_for_completed()
+                    robot.say_text("Correct! Good Job!", play_excited_animation=True).wait_for_completed()
+
 
                 if not correct:
                     robot.say_text("That is not correct.").wait_for_completed()
