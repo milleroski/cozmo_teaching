@@ -175,6 +175,7 @@ def cozmo_program(robot: cozmo.robot.Robot):
 cozmo.robot.Robot.drive_off_charger_on_connect = False
 cozmo.run_program(cozmo_program)
 
+# Fill
 # TODO: Feedback to correct/ false responses, use animations too
 # TODO: Log the face & emotion detection
 # TODO: Test if the code actually works
