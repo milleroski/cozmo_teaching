@@ -19,7 +19,7 @@ def load_dictionary():
     #         if line:
     #             lines.append(line)
 
-    with open('EnglishWords.txt', encoding='utf8') as _:
+    with open('../text_files/EnglishWords.txt', encoding='utf8') as _:
         for line in _:
             line = line.strip()
             if line:

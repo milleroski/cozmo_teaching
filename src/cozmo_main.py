@@ -1,12 +1,14 @@
 import cozmo
+from cozmo.util import degrees
 import vosk
 import pyaudio
+import threading
 import json
 import random
+import asyncio
+import time
 from Dictionary import load_dictionary
 
-
-# TODO: Add a lot more logic to this, make the robot ask again, maybe if the user wants to move on to the next word etc.
 
 def get_text_from_audio(stream, recognizer):
     data = stream.read(4096, exception_on_overflow=False)
@@ -35,17 +37,40 @@ def check_answer(text, phrase):
 
 
 def say_text(text, robot):
-    robot.say_text(text, duration_scalar=0.7).wait_for_completed()
+    robot.say_text(text, duration_scalar=0.7, in_parallel=True).wait_for_completed()
 
 
-def cozmo_program(robot: cozmo.robot.Robot):
+def follow_face(robot: cozmo.robot.Robot):
+    print("Following face...")
+    face_to_follow = None
+    while True:
+        time.sleep(1)
+        turn_action = None
+        if face_to_follow:
+            # start turning towards the face
+            # print(cozmo.faces.Face.expression)
+            turn_action = robot.turn_towards_face(face_to_follow, in_parallel=True)
+        if not (face_to_follow and face_to_follow.is_visible):
+            # find a visible face, timeout if nothing found after a short while
+            try:
+                face_to_follow = robot.world.wait_for_observed_face(timeout=1)
+            except asyncio.TimeoutError:
+                turn_action = robot.turn_in_place(degrees(45), in_parallel=True)
+                face_to_follow = None
+
+        if turn_action:
+            # Complete the turn action if one was in progress
+            turn_action.wait_for_completed()
+
+        #if
+
+
+def cozmo_program(robot):
     # Move Cozmo's head up and the lift down
     print("current battery voltage: " + str(robot.battery_voltage) + "V")
 
     robot.set_robot_volume(0.2)
-    robot.move_lift(-3)
-    robot.set_head_angle(cozmo.robot.MAX_HEAD_ANGLE).wait_for_completed()  # This doesn't work sometimes?
-
+    robot.set_head_angle(cozmo.robot.MAX_HEAD_ANGLE, in_parallel=True).wait_for_completed()
     # Load in a dictionary, for implementation see Dictionary.py
     dictionary = load_dictionary()
     dict_keys = list(dictionary.keys())
@@ -73,6 +98,8 @@ def cozmo_program(robot: cozmo.robot.Robot):
     try_again_flag = False
     repeat_definition_flag = False
     counter = 0
+
+    face_to_follow = None
     # Read and interpret words -- if successful, Cozmo repeats what you just said
     while counter < dict_length:
         attempts = 0
@@ -81,12 +108,10 @@ def cozmo_program(robot: cozmo.robot.Robot):
         word = dict_keys[counter]
 
         say_text(definition, robot)
-
         while not correct:
-
             text = get_text_from_audio(stream, recognizer)
+            robot.enable_facial_expression_estimation()
 
-            print(text)
             # This code feels like it's garbage
             # If the try_again_flag is set, make user stuck in the first part of the loop until he says yes or no
             if try_again_flag:
@@ -117,21 +142,29 @@ def cozmo_program(robot: cozmo.robot.Robot):
 
             # If the user answers, then check if the answer is correct
             if text:
-                attempts += 1
 
                 correct = check_answer(text, word)
 
                 if correct:
                     say_text("Correct! Good Job!", robot)
+                    number = random.randint(0, 9)
+                    print("Animation number " + str(number))
                     robot.play_anim_trigger(
-                        robot.anim_triggers[good_animations[random.randint(0, 9)]]).wait_for_completed()
+                        robot.anim_triggers[good_animations[number]],
+                        in_parallel=True, ignore_head_track=True).wait_for_completed()
+                    robot.set_head_angle(cozmo.robot.MAX_HEAD_ANGLE, in_parallel=True).wait_for_completed()
 
                 if not correct:
+                    attempts += 1
                     say_text("That is not correct.", robot)
                     robot.play_anim_trigger(
-                        robot.anim_triggers[bad_animations[random.randint(0, 9)]]).wait_for_completed()
+                        robot.anim_triggers[bad_animations[random.randint(0, 9)]],
+                        in_parallel=True).wait_for_completed()
+                    robot.set_head_angle(cozmo.robot.MAX_HEAD_ANGLE, in_parallel=True, ignore_head_track=True).wait_for_completed()
                     try_again_flag = True
                     say_text("Would you like to try again?", robot)
+
+                time.sleep(1)
 
         counter += 1
 
@@ -172,8 +205,18 @@ def cozmo_program(robot: cozmo.robot.Robot):
                 stopped_talking = True
 
 
-cozmo.robot.Robot.drive_off_charger_on_connect = False
-cozmo.run_program(cozmo_program)
+def main(robot: cozmo.robot.Robot):
+    cozmo.robot.Robot.drive_off_charger_on_connect = False
+    t1 = threading.Thread(target=cozmo_program, args=(robot,))
+    t2 = threading.Thread(target=follow_face, args=(robot,))
+    t2.start()
+    t1.start()
+    t1.join()
+    t2.join()
+
+
+if __name__ == "__main__":
+    cozmo.run_program(main, use_viewer=True, force_viewer_on_top=True)
 
 # Fill
 # TODO: Feedback to correct/ false responses, use animations too
