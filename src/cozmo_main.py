@@ -1,12 +1,42 @@
 import cozmo
+from cozmo.util import degrees
 import vosk
 import pyaudio
+import threading
 import json
 import random
+import asyncio
 from Dictionary import load_dictionary
 
-
-# TODO: Add a lot more logic to this, make the robot ask again, maybe if the user wants to move on to the next word etc.
+# class cozmo_main:
+#
+#     def __init__(self, robot: cozmo.robot.Robot):
+#         self.robot = robot
+#         self.face_to_follow = None
+#
+#     def cozmo_track_face(self):
+#         self.robot.enable_facial_expression_estimation()
+#
+#         face_to_follow = None
+#
+#         # If the robot is not doing anything else, do this loop until something appears
+#         while not self.robot.has_in_progress_actions:
+#             turn_action = None
+#             if face_to_follow:
+#                 # start turning towards the face
+#                 # print(cozmo.faces.Face.expression)
+#                 turn_action = self.robot.turn_towards_face(face_to_follow)
+#             if not (face_to_follow and face_to_follow.is_visible):
+#                 # find a visible face, timeout if nothing found after a short while
+#                 try:
+#                     face_to_follow = self.robot.world.wait_for_observed_face(timeout=2)
+#                 except asyncio.TimeoutError:
+#                     self.robot.turn_in_place(degrees(45)).wait_for_completed()
+#
+#             if turn_action:
+#                 # Complete the turn action if one was in progress
+#                 print(turn_action)
+#                 turn_action.wait_for_completed()
 
 def get_text_from_audio(stream, recognizer):
     data = stream.read(4096, exception_on_overflow=False)
@@ -36,6 +66,31 @@ def check_answer(text, phrase):
 
 def say_text(text, robot):
     robot.say_text(text, duration_scalar=0.7).wait_for_completed()
+
+
+def cozmo_track_face(robot):
+    robot.enable_facial_expression_estimation()
+
+    face_to_follow = None
+
+    # If the robot is not doing anything else, do this loop until something appears
+    while not robot.has_in_progress_actions:
+        turn_action = None
+        if face_to_follow:
+            # start turning towards the face
+            # print(cozmo.faces.Face.expression)
+            turn_action = robot.turn_towards_face(face_to_follow)
+        if not (face_to_follow and face_to_follow.is_visible):
+            # find a visible face, timeout if nothing found after a short while
+            try:
+                face_to_follow = robot.world.wait_for_observed_face(timeout=2)
+            except asyncio.TimeoutError:
+                robot.turn_in_place(degrees(45)).wait_for_completed()
+
+        if turn_action:
+            # Complete the turn action if one was in progress
+            print(turn_action)
+            turn_action.wait_for_completed()
 
 
 def cozmo_program(robot: cozmo.robot.Robot):
@@ -73,6 +128,8 @@ def cozmo_program(robot: cozmo.robot.Robot):
     try_again_flag = False
     repeat_definition_flag = False
     counter = 0
+
+    face_to_follow = None
     # Read and interpret words -- if successful, Cozmo repeats what you just said
     while counter < dict_length:
         attempts = 0
@@ -81,12 +138,34 @@ def cozmo_program(robot: cozmo.robot.Robot):
         word = dict_keys[counter]
 
         say_text(definition, robot)
-
         while not correct:
 
-            text = get_text_from_audio(stream, recognizer)
+            text = None
+            robot.enable_facial_expression_estimation()
+
+            # If the robot is not doing anything else, do this loop until something appears
+            while not text:
+                text = get_text_from_audio(stream, recognizer)
+                print(text)
+                turn_action = None
+                if face_to_follow:
+                    # start turning towards the face
+                    # print(cozmo.faces.Face.expression)
+                    turn_action = robot.turn_towards_face(face_to_follow)
+                if not (face_to_follow and face_to_follow.is_visible):
+                    # find a visible face, timeout if nothing found after a short while
+                    try:
+                        face_to_follow = robot.world.wait_for_observed_face(timeout=1)
+                    except asyncio.TimeoutError:
+                        robot.turn_in_place(degrees(45)).wait_for_completed()
+                        face_to_follow = None
+
+                if turn_action:
+                    # Complete the turn action if one was in progress
+                    turn_action.wait_for_completed()
 
             print(text)
+
             # This code feels like it's garbage
             # If the try_again_flag is set, make user stuck in the first part of the loop until he says yes or no
             if try_again_flag:
@@ -117,7 +196,6 @@ def cozmo_program(robot: cozmo.robot.Robot):
 
             # If the user answers, then check if the answer is correct
             if text:
-                attempts += 1
 
                 correct = check_answer(text, word)
 
@@ -127,6 +205,7 @@ def cozmo_program(robot: cozmo.robot.Robot):
                         robot.anim_triggers[good_animations[random.randint(0, 9)]]).wait_for_completed()
 
                 if not correct:
+                    attempts += 1
                     say_text("That is not correct.", robot)
                     robot.play_anim_trigger(
                         robot.anim_triggers[bad_animations[random.randint(0, 9)]]).wait_for_completed()
