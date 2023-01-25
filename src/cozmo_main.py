@@ -9,7 +9,8 @@ import asyncio
 import time
 from Dictionary import load_dictionary
 
-
+# TODO: Make robot global variable?
+robot = cozmo.robot.Robot
 def get_text_from_audio(stream, recognizer):
     data = stream.read(4096, exception_on_overflow=False)
 
@@ -36,11 +37,12 @@ def check_answer(text, phrase):
     return False
 
 
-def say_text(text, robot):
+def say_text(text, robot: cozmo.robot.Robot):
     robot.say_text(text, duration_scalar=0.7, in_parallel=True).wait_for_completed()
 
 
 def follow_face(robot: cozmo.robot.Robot):
+    robot.enable_facial_expression_estimation()
     print("Following face...")
     face_to_follow = None
     while True:
@@ -62,10 +64,8 @@ def follow_face(robot: cozmo.robot.Robot):
             # Complete the turn action if one was in progress
             turn_action.wait_for_completed()
 
-        #if
 
-
-def cozmo_program(robot):
+def cozmo_program(robot: cozmo.robot.Robot):
     # Move Cozmo's head up and the lift down
     print("current battery voltage: " + str(robot.battery_voltage) + "V")
 
@@ -87,6 +87,8 @@ def cozmo_program(robot):
     print(vocabulary)
 
     # Load in the vosk model
+    # TODO: Create a custom model with INCREASED weights for correct words, but not ONLY those words
+    # TODO: If not enough time, throw in a json with like 10000 most commonly used english words that don't confilict with the definitions
     model = vosk.Model(r"D:\Programming\CozmoSDK\cozmo_teaching\Model\vosk-model-small-en-us-0.15")
     recognizer = vosk.KaldiRecognizer(model, 16000, vocabulary)
 
@@ -95,12 +97,49 @@ def cozmo_program(robot):
     stream = mic.open(format=pyaudio.paInt16, channels=1, rate=16000, input=True, frames_per_buffer=8192)
     stream.start_stream()
 
+    # -------------Initiation and name-----------------------
+    say_text("Hi there! I'm Cozmo! What is your name?", robot)
+
+    something_said = False
+    stopped_talking = False
+    name = ""
+    while not something_said and not stopped_talking:
+
+        text = get_text_from_audio(stream, recognizer)
+
+        if text:
+            name += text
+            something_said = True
+
+        elif something_said:
+            stopped_talking = True
+
+            say_text("So your name is {}, correct?".format(name), robot)
+            question_answered = False
+            while not question_answered:
+
+                text = get_text_from_audio(stream, recognizer)
+
+                if check_answer(text, "yes"):
+                    question_answered = True
+                elif check_answer(text, "no"):
+                    question_answered = True
+                    something_said = False
+                    stopped_talking = False
+                    say_text("Ok, what is your name?", robot)
+
+    say_text("Ok, {}, Give me a fist bump!".format(name), robot)
+
+    #TODO: Insert fist bump code here
+
+    say_text("Today, we will do a vocabulary quiz. I will give you 10 vocabulary questions that you need to answer", robot)
+    say_text("These words should be familiar to you from your class with Ms. Ellen Donder.", robot)
+    say_text("Ok, let's get started!", robot)
+    # -------------Start of definition quiz------------------
     try_again_flag = False
     repeat_definition_flag = False
     counter = 0
 
-    face_to_follow = None
-    # Read and interpret words -- if successful, Cozmo repeats what you just said
     while counter < dict_length:
         attempts = 0
         correct = False
@@ -110,35 +149,31 @@ def cozmo_program(robot):
         say_text(definition, robot)
         while not correct:
             text = get_text_from_audio(stream, recognizer)
-            robot.enable_facial_expression_estimation()
 
-            # This code feels like it's garbage
+            # This code feels like it is garbage
             # If the try_again_flag is set, make user stuck in the first part of the loop until he says yes or no
             if try_again_flag:
                 if text == 'yes':
                     try_again_flag = False
                     say_text("Do you want to hear the definition again?", robot)
                     repeat_definition_flag = True
-                    continue
+
                 elif text == 'no':
                     try_again_flag = False
                     break
-                else:
-                    continue
+
+                continue
 
             if repeat_definition_flag:
                 if text == 'yes':
                     repeat_definition_flag = False
                     say_text(definition, robot)
-                    continue
+
                 elif text == 'no':
                     say_text("Alright. You may speak now.", robot)
                     repeat_definition_flag = False
-                    continue
-                else:
-                    continue
 
-            # TODO: Create a function for yes / no statement detection
+                continue
 
             # If the user answers, then check if the answer is correct
             if text:
@@ -159,8 +194,8 @@ def cozmo_program(robot):
                     say_text("That is not correct.", robot)
                     robot.play_anim_trigger(
                         robot.anim_triggers[bad_animations[random.randint(0, 9)]],
-                        in_parallel=True).wait_for_completed()
-                    robot.set_head_angle(cozmo.robot.MAX_HEAD_ANGLE, in_parallel=True, ignore_head_track=True).wait_for_completed()
+                        in_parallel=True, ignore_head_track=True).wait_for_completed()
+                    robot.set_head_angle(cozmo.robot.MAX_HEAD_ANGLE, in_parallel=True).wait_for_completed()
                     try_again_flag = True
                     say_text("Would you like to try again?", robot)
 
@@ -168,10 +203,9 @@ def cozmo_program(robot):
 
         counter += 1
 
+    # -------------End of definition quiz------------------
     say_text(
         "We are now done with the vocabulary training. Please say [word] to continue to the dialogue training.", robot)
-
-    # TODO: Alternative code structure, ask for confirmation at the name and gender section separately instead of at the end?
 
     say_text("Ok, let's get started then.", robot)
 
@@ -219,11 +253,7 @@ if __name__ == "__main__":
     cozmo.run_program(main, use_viewer=True, force_viewer_on_top=True)
 
 # Fill
-# TODO: Feedback to correct/ false responses, use animations too
 # TODO: Log the face & emotion detection
 # TODO: Test if the code actually works
-# TODO: List of words that are correct instead of a singular one? Just do it outside of check_answer
-# TODO: What if some user says something like "Yes! Wait nono no nono"?
-# TODO: The user should be able to give the answer while Cozmo is talking. Something with the .wait_for_completed() method.
 # TODO: Potential feature: "I might not understand this word. Do you want to type it with a keyboard?"
 # TODO: Maybe this whole idea could work with cubes. Press on a cube to move on, maybe to repeat the definition again (AFTER PROTOTYPE)
