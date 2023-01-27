@@ -187,7 +187,7 @@ def cozmo_program(robot: cozmo.robot.Robot):
     fist_bump(robot)
     logging.info("Ending fist bump...")
 
-    say_text("Today, we will do a vocabulary quiz. I will give you 10 vocabulary questions that you need to answer",
+    say_text("Today, we will do a vocabulary quiz. I will give you {} vocabulary questions that you need to answer".format(str(dict_length)),
              robot)
     say_text("These words should be familiar to you from your class with Ms. Ellen Donder.", robot)
     say_text("Ok, let's get started!", robot)
