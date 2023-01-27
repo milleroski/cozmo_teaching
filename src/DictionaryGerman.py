@@ -14,7 +14,7 @@ def load_dictionary():
     lines = []
 
     # Read the dictionary text file and write it into list, also, get rid of unnecessary lines
-    with open(os.path.abspath("EnglishWords.txt"), encoding='utf8') as _:
+    with open(os.path.abspath("GermanWords.txt"), encoding='utf8') as _:
         for line in _:
             line = line.strip()
             if line:

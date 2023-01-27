@@ -9,7 +9,8 @@ import random
 import asyncio
 import time
 import logging
-from Dictionary import load_dictionary
+import os
+from DictionaryEnglish import load_dictionary
 
 # logging.basicConfig(filename='logging.log', level=logging.DEBUG)
 logging.basicConfig(
@@ -18,11 +19,13 @@ logging.basicConfig(
     level=logging.DEBUG,
     datefmt='%Y-%m-%d %H:%M:%S')
 
+# This condition is used to stop the thread looping follow_face
 condition = threading.Event()
+
 # This chunk of code HAS to be declared in the outer scope because of the get_text_from_audio function
 # Otherwise the recognizer and stream parameters remain static, which messes the speech detection up
 # Load in the vosk model
-model = vosk.Model(r"D:\Programming\CozmoSDK\cozmo_teaching\Model\vosk-model-small-en-us-0.15")
+model = vosk.Model(os.path.abspath("vosk-model-small-en-us-0.15"))
 recognizer = vosk.KaldiRecognizer(model, 16000)
 # recognizer = vosk.KaldiRecognizer(model, 16000, vocabulary)
 
@@ -122,7 +125,7 @@ def cozmo_program(robot: cozmo.robot.Robot):
     robot.set_robot_volume(1)
     robot.set_head_angle(cozmo.robot.MAX_HEAD_ANGLE, in_parallel=True).wait_for_completed()
     robot.set_lift_height(0, in_parallel=True)
-    # Load in a dictionary, for implementation see Dictionary.py
+    # Load in a dictionary, for implementation see DictionaryGerman.py
     dictionary = load_dictionary()
     dict_keys = list(dictionary.keys())
     dict_length = len(dictionary)

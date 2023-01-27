@@ -10,7 +10,7 @@ import asyncio
 import time
 import logging
 import os
-from Dictionary import load_dictionary
+from DictionaryGerman import load_dictionary
 
 # logging.basicConfig(filename='logging.log', level=logging.DEBUG)
 logging.basicConfig(
@@ -84,7 +84,8 @@ def check_answer(text, phrase):
 
 
 def say_text(text, robot: cozmo.robot.Robot):
-    robot.say_text(text, duration_scalar=0.7, in_parallel=True).wait_for_completed()
+
+    robot.say_text(text, use_cozmo_voice=False, duration_scalar=0.7, voice_pitch=1.0, in_parallel=True).wait_for_completed()
 
 
 def handle_face_observed(evt, face: cozmo.faces.Face, **kwargs):
@@ -124,7 +125,7 @@ def cozmo_program(robot: cozmo.robot.Robot):
     robot.set_robot_volume(1)
     robot.set_head_angle(cozmo.robot.MAX_HEAD_ANGLE, in_parallel=True).wait_for_completed()
     robot.set_lift_height(0, in_parallel=True)
-    # Load in a dictionary, for implementation see Dictionary.py
+    # Load in a dictionary, for implementation see DictionaryGerman.py
     dictionary = load_dictionary()
     dict_keys = list(dictionary.keys())
     dict_length = len(dictionary)
@@ -216,30 +217,34 @@ def cozmo_program(robot: cozmo.robot.Robot):
         while not correct:
             text = get_text_from_audio()
 
-            # If the try_again_flag is set, make user stuck in the first part of the loop until he says yes or no
-            if try_again_flag:
-
-                logging.info("User answering try_again...")
-
-                # Add long string of confirmation and denial words
-                if text == 'yes':
-                    try_again_flag = False
-                    say_text("Frage {}, {}".format(str(counter + 1), definition), robot)
-
-                elif text == 'no':
-                    try_again_flag = False
-                    say_text("Das Wort ist {}.".format(word), robot)
-                    say_text("Die Definition lautet {}".format(definition), robot)
-                    break
-
-                continue
 
             # If the user answers, then check if the answer is correct
             if text:
 
+                # If the try_again_flag is set, make user stuck in the first part of the loop until he says yes or no
+                if try_again_flag:
+
+                    logging.info("User answering try_again...")
+
+                    # Add long string of confirmation and denial words
+                    if check_answer(text, "ja"):
+                        try_again_flag = False
+                        say_text("Frage {}, {}".format(str(counter + 1), definition), robot)
+
+                    elif check_answer(text, "nein"):
+                        try_again_flag = False
+                        say_text("Das Wort ist {}.".format(word), robot)
+                        say_text("Die Definition lautet {}".format(definition), robot)
+                        break
+
+                    continue
+
                 logging.info(text)
 
                 correct = check_answer(text, word)
+
+                print(text)
+                print(word)
 
                 if correct:
                     logging.info("Correct answer...")
@@ -407,7 +412,7 @@ def cozmo_program(robot: cozmo.robot.Robot):
                 sentence = recognizer.Result()[14:-3]
 
     stream.stop_stream()
-
+    # sentence
     say_text("Das ist das Ende vom Dialogtraining, gut gemacht!.", robot)
 
     logging.info("End of study dialogue")
