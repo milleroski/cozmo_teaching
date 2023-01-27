@@ -1,4 +1,4 @@
-attachment - How do you call any kind of document that you add to an email.
+attachment - Any kind of document that you add to an email.
 
 conference room - A space usually set aside for people to get together, often informally to hold meetings, for issues to be discussed, priorities set and decisions made.
 
@@ -8,7 +8,7 @@ department - A division of a large organization such as a government, university
 
 extension - A part that is added to a phone number to reach a particular person or department.
 
-landline - A telephone that transmits the signal through a wire, rather than through wireless transmission as is the case with mobile phones.
+land line - A telephone that transmits the signal through a wire, rather than through wireless transmission as is the case with mobile phones.
 
 voicemail - An electronically stored voice message that is left by a caller to be retrieved.
 
