@@ -122,7 +122,7 @@ def cozmo_program(robot: cozmo.robot.Robot):
     logging.info("Preparation started...")
     logging.info("current battery voltage: " + str(robot.battery_voltage) + "V")
 
-    robot.set_robot_volume(1)
+    robot.set_robot_volume(0.7)
     robot.set_head_angle(cozmo.robot.MAX_HEAD_ANGLE, in_parallel=True).wait_for_completed()
     robot.set_lift_height(0, in_parallel=True)
     # Load in a dictionary, for implementation see DictionaryGerman.py
