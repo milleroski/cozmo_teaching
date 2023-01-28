@@ -10,11 +10,15 @@ import asyncio
 import time
 import logging
 import os
+import datetime
 from DictionaryEnglish import load_dictionary
+
+currentDT = datetime.datetime.now()
+FileName = currentDT.strftime("%Y_%m_%d_%H_%M_%S") + "_cozmo_english.log"
 
 # logging.basicConfig(filename='logging.log', level=logging.DEBUG)
 logging.basicConfig(
-    filename='logging.log',
+    filename=FileName,
     format='%(asctime)s %(levelname)-8s %(message)s',
     level=logging.DEBUG,
     datefmt='%Y-%m-%d %H:%M:%S')
