@@ -39,7 +39,7 @@ stream = mic.open(format=pyaudio.paInt16, channels=1, rate=16000, input=True, fr
 
 
 def sense_bump(robot: cozmo.robot.Robot, save_acc):
-    sensibility = 3500
+    sensibility = 1000
     if save_acc._x > robot.accelerometer._x + sensibility or save_acc._x < robot.accelerometer._x - sensibility:
         return True
     if save_acc._y > robot.accelerometer._y + sensibility or save_acc._y < robot.accelerometer._y - sensibility:
@@ -56,6 +56,7 @@ def fist_bump(robot: cozmo.robot.Robot):
                             ignore_head_track=True).wait_for_completed()
     save_acc = robot.accelerometer
     logging.info("Entering first bump loop...")
+
     while not sense_bump(robot, save_acc):
         print("In fist_bump loop")
         # If 3 seconds pass, repeat give me a fist bump
@@ -76,7 +77,7 @@ def get_text_from_audio():
 def check_answer_list(text, phrase):
     for word in phrase:
         correct = check_answer(text, word)
-
+        
         if correct:
             return True
 
@@ -112,7 +113,8 @@ def follow_face(robot: cozmo.robot.Robot):
             cozmo.event.oneshot(handle_face_observed)
 
             # turn towards the face
-            turn_action = robot.turn_towards_face(face_to_follow, in_parallel=True)
+            if robot.lift_ratio < 0.75:
+                turn_action = robot.turn_towards_face(face_to_follow, in_parallel=True)
 
         if not (face_to_follow and face_to_follow.is_visible):
             logging.info("Lost face, searching...")
@@ -121,12 +123,14 @@ def follow_face(robot: cozmo.robot.Robot):
             try:
                 face_to_follow = robot.world.wait_for_observed_face(timeout=1)
             except asyncio.TimeoutError:
-                turn_action = robot.turn_in_place(degrees(45), in_parallel=True)
+                if robot.lift_ratio < 0.75:
+                    turn_action = robot.turn_in_place(degrees(45), in_parallel=True)
                 face_to_follow = None
 
         if turn_action:
             # Complete the turn action if one was in progress
             turn_action.wait_for_completed()
+
 
 
 def cozmo_program(robot: cozmo.robot.Robot):
@@ -148,8 +152,8 @@ def cozmo_program(robot: cozmo.robot.Robot):
     good_animations = [1, 7, 23, 26, 30, 31, 35, 50, 57, 68]
 
     # Vocabulary that the user is likely to use to answer
-    confirmation_words = ["yes", "yeah", "sure", "correct", "is true", "indeed", "positive"]
-    denial_words = ["no", "nope", "nah", "incorrect", "is not true", "negative"]
+    confirmation_words = ["yes", "yet", "es", "ya", "ok", "okay", "okey", "yeah", "sure", "correct", "is true", "indeed", "positive"]
+    denial_words = ["no", "nope", "know", "nah", "incorrect", "is not true", "negative"]
     vocabulary = json.dumps(dict_keys + confirmation_words)
     logging.info(vocabulary)
 
@@ -158,7 +162,7 @@ def cozmo_program(robot: cozmo.robot.Robot):
     logging.info("Start of introduction...")
     say_text("Hi there! I'm Cozmo! Your language learning companion!", robot)
     say_text("You can interact with me through the microphone when I ask questions!", robot)
-    say_text("Please try to give short answers if possible, as I'm still learning how to interact with humans!", robot)
+    say_text("Please try to give me clear answers if possible, and repeat your answer if I do not respond to you, as I'm still learning how to interact with humans!", robot)
     say_text("What is your name? Please answer with ONLY, your name, not with a sentence", robot)
 
     something_said = False
@@ -198,7 +202,7 @@ def cozmo_program(robot: cozmo.robot.Robot):
 
     stream.stop_stream()
     logging.info("Exiting name loop...")
-    say_text("Ok, {}, Give me a fist bump!".format(name), robot)
+    say_text("Ok, {}, Give me a nice fist bump!".format(name), robot)
 
     logging.info("Starting fist bump...")
     fist_bump(robot)
@@ -208,7 +212,7 @@ def cozmo_program(robot: cozmo.robot.Robot):
         "Today, we will do a vocabulary quiz. I will give you {} vocabulary questions that you need to answer".format(
             str(dict_length)),
         robot)
-    say_text("These words should be familiar to you from your class with Ms. Ellen Donder.", robot)
+    say_text("These words should be familiar to you from your class with Mr. Tommy Janota.", robot)
     say_text("Ok, let's get started!", robot)
     logging.info("End of introduction...")
     # -------------Start of definition quiz------------------
@@ -253,10 +257,12 @@ def cozmo_program(robot: cozmo.robot.Robot):
 
                     continue
 
-                correct = check_answer(text, word)
+                correct = check_answer(text.replace(" ", ""), word.replace(" ", ""))
 
                 if correct:
                     logging.info("Correct answer: {} {}".format(text, word))
+                    say_text("Your answer {}.".format(text), robot)
+                    say_text("is", robot)
                     say_text("Correct! Good Job!", robot)
                     number = random.randint(0, 9)
                     logging.info("Good animation number " + str(number))
@@ -267,7 +273,8 @@ def cozmo_program(robot: cozmo.robot.Robot):
                 else:
                     logging.info("Incorrect answer: {} {}".format(text, word))
                     first_try = False
-                    say_text("That is not correct.", robot)
+                    say_text("Your answer {}.".format(text), robot)
+                    say_text("is not correct.", robot)
                     number = random.randint(0, 9)
                     logging.info("Bad animation number " + str(number))
                     robot.play_anim_trigger(
@@ -288,11 +295,15 @@ def cozmo_program(robot: cozmo.robot.Robot):
     logging.info("Start of vocabulary exercise summary...")
     score = first_try_counter / dict_length
     percentage = score * 100
+    percentage = round(percentage, 2)
 
     logging.info("{} = {}/{}".format(float(percentage), int(dict_length), int(first_try_counter)))
 
-    say_text("First of all, good job buddy!, give me a fist bump!", robot)
+    say_text("I would like to say, first of all, great job, {}".format(name), robot)
+    say_text("Give me a nice fist bump!", robot)
+    logging.info("Starting fist bump...")
     fist_bump(robot)
+    logging.info("Ending fist bump...")
     say_text("You got {} correct answers out of {} questions. That is a {} percentage.".format(first_try_counter,
                                                                                                dict_length, percentage),
              robot)
@@ -335,9 +346,21 @@ def cozmo_program(robot: cozmo.robot.Robot):
 
     logging.info("Starting dialogue exercise...")
 
-    say_text(
-        "We will now practice dialogue. You should have a sheet of paper in front of you. You can speak in full sentences!",
-        robot)
+    say_text("We will now practice dialogue. This will be a telephone call.", robot)
+    say_text("You are a secretary of Mr. Franks. Mr. Franks is out of town so he is not available to talk on the telephone.", robot)
+    say_text("Cozmo is calling to complain about the problem and will ask for Mr. Franks.", robot)
+    say_text("Mr. Franks did not tell you any details of this problem so you should ask what the problem is.", robot)
+    say_text("Cozmo will ask for a meeting with Mr. Franks on Thursday afternoon.", robot)
+    say_text("Mr. Franks is busy in the afternoon but you can offer Cozmo a meeting slot with Mr. Franks on Thursday morning.", robot)
+    say_text("Thursday morning does not work for Cozmo and you see that Mr. Franks is available on Friday morning", robot)
+    say_text("Mr. Franks is available only from 10 in the morning on Friday.", robot)
+    say_text("So your role as a secretary is to ", robot)
+    say_text("First, tell Cozmo Mr. Franks is not available.", robot)
+    say_text("Second, ask Cozmo about the details of the problem.", robot)
+    say_text("Third, tell Cozmo that Mr. Franks is not available on Thursday afternoon but Thursday or Friday morning works for a meeting.", robot)
+    say_text("Finally, tell Cozmo that Mr. Franks is available at 10 in the morning on Friday.", robot)
+    say_text("And, do not forget to ask if Cozmo needs anything else.", robot)
+    say_text("During the dialog training, please speak in full sentences!", robot)
     say_text("Ok, here we go!", robot)
 
     lines = [

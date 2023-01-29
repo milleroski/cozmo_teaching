@@ -38,7 +38,7 @@ stream = mic.open(format=pyaudio.paInt16, channels=1, rate=16000, input=True, fr
 
 
 def sense_bump(robot: cozmo.robot.Robot, save_acc):
-    sensibility = 3500
+    sensibility = 1000
     if save_acc._x > robot.accelerometer._x + sensibility or save_acc._x < robot.accelerometer._x - sensibility:
         return True
     if save_acc._y > robot.accelerometer._y + sensibility or save_acc._y < robot.accelerometer._y - sensibility:
@@ -55,6 +55,7 @@ def fist_bump(robot: cozmo.robot.Robot):
                             ignore_head_track=True).wait_for_completed()
     save_acc = robot.accelerometer
     logging.info("Entering first bump loop...")
+
     while not sense_bump(robot, save_acc):
         print("In fist_bump loop")
         # If 3 seconds pass, repeat give me a fist bump
@@ -112,7 +113,8 @@ def follow_face(robot: cozmo.robot.Robot):
             cozmo.event.oneshot(handle_face_observed)
 
             # turn towards the face
-            turn_action = robot.turn_towards_face(face_to_follow, in_parallel=True)
+            if robot.lift_ratio < 0.75:
+                turn_action = robot.turn_towards_face(face_to_follow, in_parallel=True)
 
         if not (face_to_follow and face_to_follow.is_visible):
             logging.info("Lost face, searching...")
@@ -121,7 +123,8 @@ def follow_face(robot: cozmo.robot.Robot):
             try:
                 face_to_follow = robot.world.wait_for_observed_face(timeout=1)
             except asyncio.TimeoutError:
-                turn_action = robot.turn_in_place(degrees(45), in_parallel=True)
+                if robot.lift_ratio < 0.75:
+                    turn_action = robot.turn_in_place(degrees(45), in_parallel=True)
                 face_to_follow = None
 
         if turn_action:
@@ -291,6 +294,7 @@ def cozmo_program(robot: cozmo.robot.Robot):
     logging.info("Start of vocabulary exercise summary...")
     score = first_try_counter / dict_length
     percentage = score * 100
+    percentage = round(percentage, 2)
 
     logging.info("{} = {}/{}".format(float(percentage), int(dict_length), int(first_try_counter)))
 
@@ -352,7 +356,7 @@ def cozmo_program(robot: cozmo.robot.Robot):
     question_answered = False
     have_anrede = False
 
-    while not question_answered and not have_anrede:
+    while not (question_answered and have_anrede):
 
         text = get_text_from_audio()
 
@@ -467,3 +471,4 @@ if __name__ == "__main__":
 
 # TODO: Potential feature: "I might not understand this word. Do you want to type it with a keyboard?"
 # TODO: Maybe this whole idea could work with cubes. Press on a cube to move on, maybe to repeat the definition again (AFTER PROTOTYPE)
+
