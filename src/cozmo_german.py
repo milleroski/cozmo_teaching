@@ -14,7 +14,7 @@ import datetime
 from DictionaryGerman import load_dictionary
 
 currentDT = datetime.datetime.now()
-FileName = currentDT.strftime("%Y_%m_%d_%H_%M_%S") + "_cozmo_english.log"
+FileName = currentDT.strftime("%Y_%m_%d_%H_%M_%S") + "_cozmo_german.log"
 
 # logging.basicConfig(filename='logging.log', level=logging.DEBUG)
 logging.basicConfig(
