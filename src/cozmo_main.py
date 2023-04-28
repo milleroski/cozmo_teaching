@@ -112,7 +112,7 @@ def follow_face(robot: cozmo.robot.Robot):
                 # ... but only once per loop (without the oneshot it prints the result every FRAME
                 cozmo.event.oneshot(handle_face_observed)
 
-                # turn towards the face
+                # turn towards the face if the fist bump animation is not taking place
                 if robot.lift_ratio < 0.75:
                     turn_action = robot.turn_towards_face(face_to_follow, in_parallel=True)
 
@@ -134,6 +134,7 @@ def follow_face(robot: cozmo.robot.Robot):
     except Exception as e:
         logging.critical(e, exc_info=True)
 
+
 def cozmo_program(robot: cozmo.robot.Robot):
     # Move Cozmo's head up and the lift down
     try:
@@ -154,7 +155,8 @@ def cozmo_program(robot: cozmo.robot.Robot):
         good_animations = [1, 7, 23, 26, 30, 31, 35, 50, 57, 68]
 
         # Vocabulary that the user is likely to use to answer
-        confirmation_words = ["yes", "yet", "es", "ya", "ok", "okay", "okey", "yeah", "sure", "correct", "is true", "indeed", "positive"]
+        confirmation_words = ["yes", "yet", "es", "ya", "ok", "okay", "okey", "yeah", "sure", "correct", "is true",
+                              "indeed", "positive"]
         denial_words = ["no", "nope", "know", "nah", "incorrect", "is not true", "negative"]
         vocabulary = json.dumps(dict_keys + confirmation_words)
         logging.info(vocabulary)
@@ -164,7 +166,9 @@ def cozmo_program(robot: cozmo.robot.Robot):
         logging.info("Start of introduction...")
         say_text("Hi there! I'm Cozmo! Your language learning companion!", robot)
         say_text("You can interact with me through the microphone when I ask questions!", robot)
-        say_text("Please try to give me clear answers if possible, and repeat your answer if I do not respond to you, as I'm still learning how to interact with humans!", robot)
+        say_text(
+            "Please try to give me clear answers if possible, and repeat your answer if I do not respond to you, as I'm still learning how to interact with humans!",
+            robot)
         say_text("What is your name? Please answer with ONLY, your name, not with a sentence", robot)
 
         something_said = False
@@ -304,7 +308,9 @@ def cozmo_program(robot: cozmo.robot.Robot):
         logging.info("Starting fist bump...")
         fist_bump(robot)
         logging.info("Ending fist bump...")
-        say_text("You got {} correct answers out of {} questions. That is a {} percentage.".format(first_try_counter, dict_length, percentage), robot)
+        say_text("You got {} correct answers out of {} questions. That is a {} percentage.".format(first_try_counter,
+                                                                                                   dict_length,
+                                                                                                   percentage), robot)
 
         if percentage >= 90:
             say_text("Fantastic job! I'm impressed!", robot)
@@ -313,8 +319,9 @@ def cozmo_program(robot: cozmo.robot.Robot):
         elif percentage >= 50:
             say_text("You are getting there. Don't give up and let's keep practicing!", robot)
         else:
-            say_text("It's not that easy, but I'm glad that you are trying, don't give up and let's practice again next "
-                     "time!", robot)
+            say_text(
+                "It's not that easy, but I'm glad that you are trying, don't give up and let's practice again next "
+                "time!", robot)
 
         robot.play_anim_trigger(
             robot.anim_triggers[good_animations[random.randint(0, 9)]],
@@ -323,7 +330,8 @@ def cozmo_program(robot: cozmo.robot.Robot):
         logging.info("End of vocabulary exercise summary...")
         # -------------End of definition quiz------------------
         say_text(
-            "We are now done with the vocabulary training. Please say, okay, to continue to the dialogue training.", robot)
+            "We are now done with the vocabulary training. Please say, okay, to continue to the dialogue training.",
+            robot)
 
         logging.info("Waiting for user confirmation word...")
 
@@ -345,17 +353,25 @@ def cozmo_program(robot: cozmo.robot.Robot):
         logging.info("Starting dialogue exercise...")
 
         say_text("We will now practice dialogue. This will be a telephone call.", robot)
-        say_text("You are a secretary of Mr. Franks. Mr. Franks is out of town so he is not available to talk on the telephone.", robot)
+        say_text(
+            "You are a secretary of Mr. Franks. Mr. Franks is out of town so he is not available to talk on the telephone.",
+            robot)
         say_text("Cozmo is calling to complain about the problem and will ask for Mr. Franks.", robot)
-        say_text("Mr. Franks did not tell you any details of this problem so you should ask what the problem is.", robot)
+        say_text("Mr. Franks did not tell you any details of this problem so you should ask what the problem is.",
+                 robot)
         say_text("Cozmo will ask for a meeting with Mr. Franks on Thursday afternoon.", robot)
-        say_text("Mr. Franks is busy in the afternoon but you can offer Cozmo a meeting slot with Mr. Franks on Thursday morning.", robot)
-        say_text("Thursday morning does not work for Cozmo and you see that Mr. Franks is available on Friday morning", robot)
+        say_text(
+            "Mr. Franks is busy in the afternoon but you can offer Cozmo a meeting slot with Mr. Franks on Thursday morning.",
+            robot)
+        say_text("Thursday morning does not work for Cozmo and you see that Mr. Franks is available on Friday morning",
+                 robot)
         say_text("Mr. Franks is available only from 10 in the morning on Friday.", robot)
         say_text("So your role as a secretary is to ", robot)
         say_text("First, tell Cozmo Mr. Franks is not available.", robot)
         say_text("Second, ask Cozmo about the details of the problem.", robot)
-        say_text("Third, tell Cozmo that Mr. Franks is not available on Thursday afternoon but Thursday or Friday morning works for a meeting.", robot)
+        say_text(
+            "Third, tell Cozmo that Mr. Franks is not available on Thursday afternoon but Thursday or Friday morning works for a meeting.",
+            robot)
         say_text("Finally, tell Cozmo that Mr. Franks is available at 10 in the morning on Friday.", robot)
         say_text("And, do not forget to ask if Cozmo needs anything else.", robot)
         say_text("During the dialog training, please speak in full sentences!", robot)
@@ -412,6 +428,8 @@ def cozmo_program(robot: cozmo.robot.Robot):
 
     except Exception as e:
         logging.critical(e, exc_info=True)
+
+
 def main(robot: cozmo.robot.Robot):
     cozmo.robot.Robot.drive_off_charger_on_connect = False
     t1 = threading.Thread(target=cozmo_program, args=(robot,))

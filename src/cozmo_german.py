@@ -260,7 +260,7 @@ def cozmo_program(robot: cozmo.robot.Robot):
 
                         continue
 
-                    correct = check_answer(text.replace(" ", ""), word.replace(" " ,""))
+                    correct = check_answer(text.replace(" ", ""), word.replace(" ", ""))
 
                     print(text)
                     print(word)
@@ -475,4 +475,3 @@ if __name__ == "__main__":
 
 # TODO: Potential feature: "I might not understand this word. Do you want to type it with a keyboard?"
 # TODO: Maybe this whole idea could work with cubes. Press on a cube to move on, maybe to repeat the definition again (AFTER PROTOTYPE)
-
