@@ -1,30 +1,16 @@
 import cozmo
 import cozmo.faces
-import vosk
-import pyaudio
 import threading
 import json
 import random
 import time
-import os
 from DictionaryEnglish import load_dictionary
 from base_logger import logger
 from face_detection import follow_face
+from speech_detection import get_text_from_audio, stream, recognizer
 
 # This condition is used to stop the thread looping in follow_face
 condition = threading.Event()
-
-#--------------------VOSK INITIATION--------------------
-# This chunk of code HAS to be declared in the outer scope because of the get_text_from_audio function
-# Otherwise the recognizer and stream parameters remain static, which messes the speech detection up
-# Load in the vosk model
-model = vosk.Model(os.path.abspath("vosk-model-small-en-us-0.15"))
-recognizer = vosk.KaldiRecognizer(model, 16000)
-
-# Take microphone input
-mic = pyaudio.PyAudio()
-stream = mic.open(format=pyaudio.paInt16, channels=1, rate=16000, input=True, frames_per_buffer=8192)
-#--------------------VOSK INITIATION--------------------
 
 #------------------------------FIST BUMP BLOCK------------------------------
 
@@ -55,12 +41,6 @@ def fist_bump(robot: cozmo.robot.Robot):
     robot.set_head_angle(cozmo.robot.MAX_HEAD_ANGLE, in_parallel=True).wait_for_completed()
     robot.set_lift_height(0, in_parallel=True)
 #------------------------------FIST BUMP BLOCK------------------------------
-
-def get_text_from_audio():
-    data = stream.read(4096, exception_on_overflow=False)
-
-    if recognizer.AcceptWaveform(data):
-        return recognizer.Result()[14:-3]
 
 
 def check_answer_list(text, phrase):
