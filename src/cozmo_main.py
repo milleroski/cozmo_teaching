@@ -1,31 +1,20 @@
 import cozmo
-from cozmo.util import degrees
 import cozmo.faces
 import vosk
 import pyaudio
 import threading
 import json
 import random
-import asyncio
 import time
-import logging
 import os
-import datetime
 from DictionaryEnglish import load_dictionary
+from base_logger import logger
+from face_detection import follow_face
 
-currentDT = datetime.datetime.now()
-FileName = currentDT.strftime("%Y_%m_%d_%H_%M_%S") + "_cozmo_english.log"
-
-# logging.basicConfig(filename='logging.log', level=logging.DEBUG)
-logging.basicConfig(
-    filename=FileName,
-    format='%(asctime)s %(levelname)-8s %(message)s',
-    level=logging.DEBUG,
-    datefmt='%Y-%m-%d %H:%M:%S')
-
-# This condition is used to stop the thread looping follow_face
+# This condition is used to stop the thread looping in follow_face
 condition = threading.Event()
 
+#--------------------VOSK INITIATION--------------------
 # This chunk of code HAS to be declared in the outer scope because of the get_text_from_audio function
 # Otherwise the recognizer and stream parameters remain static, which messes the speech detection up
 # Load in the vosk model
@@ -35,7 +24,9 @@ recognizer = vosk.KaldiRecognizer(model, 16000)
 # Take microphone input
 mic = pyaudio.PyAudio()
 stream = mic.open(format=pyaudio.paInt16, channels=1, rate=16000, input=True, frames_per_buffer=8192)
+#--------------------VOSK INITIATION--------------------
 
+#------------------------------FIST BUMP BLOCK------------------------------
 
 def sense_bump(robot: cozmo.robot.Robot, save_acc):
     sensibility = 1000
@@ -47,24 +38,23 @@ def sense_bump(robot: cozmo.robot.Robot, save_acc):
         return True
     return False
 
-
 # Code taken from animation.py, written by Maximilian
 def fist_bump(robot: cozmo.robot.Robot):
-    logging.info("In fist bump")
+    logger.info("In fist bump")
     robot.play_anim_trigger(robot.anim_triggers[199], in_parallel=True, ignore_body_track=True,
                             ignore_head_track=True).wait_for_completed()
     save_acc = robot.accelerometer
-    logging.info("Entering first bump loop...")
+    logger.info("Entering first bump loop...")
 
     while not sense_bump(robot, save_acc):
         print("In fist_bump loop")
         # If 3 seconds pass, repeat give me a fist bump
-    logging.info("Exiting first bump loop...")
+    logger.info("Exiting first bump loop...")
     robot.play_anim_trigger(robot.anim_triggers[201], in_parallel=True, ignore_body_track=True,
                             ignore_head_track=True).wait_for_completed()
     robot.set_head_angle(cozmo.robot.MAX_HEAD_ANGLE, in_parallel=True).wait_for_completed()
     robot.set_lift_height(0, in_parallel=True)
-
+#------------------------------FIST BUMP BLOCK------------------------------
 
 def get_text_from_audio():
     data = stream.read(4096, exception_on_overflow=False)
@@ -94,53 +84,12 @@ def say_text(text, robot: cozmo.robot.Robot):
     robot.say_text(text, duration_scalar=0.7, in_parallel=True).wait_for_completed()
 
 
-def handle_face_observed(evt, face: cozmo.faces.Face, **kwargs):
-    logging.info(face.expression + "-" + str(face.expression_score))
-
-
-def follow_face(robot: cozmo.robot.Robot):
-    try:
-        robot.enable_facial_expression_estimation()
-        logging.info("Following face...")
-        face_to_follow = None
-        while not condition.is_set():
-            time.sleep(0.5)
-            turn_action = None
-            if face_to_follow:
-                # Log the facial recognition...start turning towards the face
-                robot.add_event_handler(cozmo.faces.EvtFaceObserved, handle_face_observed)
-                # ... but only once per loop (without the oneshot it prints the result every FRAME
-                cozmo.event.oneshot(handle_face_observed)
-
-                # turn towards the face if the fist bump animation is not taking place
-                if robot.lift_ratio < 0.75:
-                    turn_action = robot.turn_towards_face(face_to_follow, in_parallel=True)
-
-            if not (face_to_follow and face_to_follow.is_visible):
-                logging.info("Lost face, searching...")
-
-                # find a visible face, timeout if nothing found after a short while
-                try:
-                    face_to_follow = robot.world.wait_for_observed_face(timeout=1)
-                except asyncio.TimeoutError:
-                    if robot.lift_ratio < 0.75:
-                        turn_action = robot.turn_in_place(degrees(45), in_parallel=True)
-                    face_to_follow = None
-
-            if turn_action:
-                # Complete the turn action if one was in progress
-                turn_action.wait_for_completed()
-
-    except Exception as e:
-        logging.critical(e, exc_info=True)
-
-
 def cozmo_program(robot: cozmo.robot.Robot):
     # Move Cozmo's head up and the lift down
     try:
         robot.set_robot_volume(0.7)
-        logging.info("Preparation started...")
-        logging.info("current battery voltage: " + str(robot.battery_voltage) + "V")
+        logger.info("Preparation started...")
+        logger.info("current battery voltage: " + str(robot.battery_voltage) + "V")
 
         robot.set_head_angle(cozmo.robot.MAX_HEAD_ANGLE, in_parallel=True).wait_for_completed()
         robot.set_lift_height(0, in_parallel=True)
@@ -159,11 +108,11 @@ def cozmo_program(robot: cozmo.robot.Robot):
                               "indeed", "positive"]
         denial_words = ["no", "nope", "know", "nah", "incorrect", "is not true", "negative"]
         vocabulary = json.dumps(dict_keys + confirmation_words)
-        logging.info(vocabulary)
+        logger.info(vocabulary)
 
-        logging.info("Preparation ended...")
+        logger.info("Preparation ended...")
         # -------------Initiation and name-----------------------
-        logging.info("Start of introduction...")
+        logger.info("Start of introduction...")
         say_text("Hi there! I'm Cozmo! Your language learning companion!", robot)
         say_text("You can interact with me through the microphone when I ask questions!", robot)
         say_text(
@@ -176,13 +125,13 @@ def cozmo_program(robot: cozmo.robot.Robot):
         name = ""
 
         stream.start_stream()
-        logging.info("Entering name loop...")
+        logger.info("Entering name loop...")
         while not (something_said and stopped_talking):
 
             text = get_text_from_audio()
 
             if text:
-                logging.info("Name: " + text)
+                logger.info("Name: " + text)
                 name += text
                 something_said = True
 
@@ -196,7 +145,7 @@ def cozmo_program(robot: cozmo.robot.Robot):
                     text = get_text_from_audio()
 
                     if text:
-                        logging.info("Confirmation: " + text)
+                        logger.info("Confirmation: " + text)
                         if check_answer_list(text, confirmation_words):
                             question_answered = True
                         elif check_answer_list(text, denial_words):
@@ -207,29 +156,29 @@ def cozmo_program(robot: cozmo.robot.Robot):
                             say_text("Ok, what is your name?", robot)
 
         stream.stop_stream()
-        logging.info("Exiting name loop...")
+        logger.info("Exiting name loop...")
         say_text("Ok, {}, Give me a nice fist bump!".format(name), robot)
 
-        logging.info("Starting fist bump...")
+        logger.info("Starting fist bump...")
         fist_bump(robot)
-        logging.info("Ending fist bump...")
+        logger.info("Ending fist bump...")
 
+        # -------------Start of definition quiz------------------
+        logger.info("End of introduction...")
+        logger.info("Start of vocabulary exercise...")
         say_text(
             "Today, we will do a vocabulary quiz. I will give you {} vocabulary questions that you need to answer".format(
                 str(dict_length)),
             robot)
         say_text("These words should be familiar to you from your class with Mr. Tommy Janota.", robot)
         say_text("Ok, let's get started!", robot)
-        logging.info("End of introduction...")
-        # -------------Start of definition quiz------------------
-        logging.info("Start of vocabulary exercise...")
         try_again_flag = False
         counter = 0
         first_try_counter = 0
 
         stream.start_stream()
         while counter < dict_length:
-            logging.info("In main loop, question {} of {}".format(counter, dict_length))
+            logger.info("In main loop, question {} of {}".format(counter, dict_length))
             correct = False
             first_try = True
             definition = dictionary.get(dict_keys[counter])[0]
@@ -243,12 +192,12 @@ def cozmo_program(robot: cozmo.robot.Robot):
                 # If the user answers, then check if the answer is correct
                 if text:
 
-                    logging.info(text)
+                    logger.info(text)
 
                     # If the try_again_flag is set, make user stuck in the first part of the loop until he says yes or no
                     if try_again_flag:
 
-                        logging.info("User answering try_again...")
+                        logger.info("User answering try_again...")
 
                         # Add long string of confirmation and denial words
                         if check_answer_list(text, confirmation_words):
@@ -266,22 +215,22 @@ def cozmo_program(robot: cozmo.robot.Robot):
                     correct = check_answer(text.replace(" ", ""), word.replace(" ", ""))
 
                     if correct:
-                        logging.info("Correct answer: {} {}".format(text, word))
+                        logger.info("Correct answer: {} {}".format(text, word))
                         say_text("Your answer {}.".format(text), robot)
                         say_text("is", robot)
                         say_text("Correct! Good Job!", robot)
                         number = random.randint(0, 9)
-                        logging.info("Good animation number " + str(number))
+                        logger.info("Good animation number " + str(number))
                         robot.play_anim_trigger(
                             robot.anim_triggers[good_animations[number]],
                             in_parallel=True, ignore_body_track=True).wait_for_completed()
                         robot.set_head_angle(cozmo.robot.MAX_HEAD_ANGLE, in_parallel=True).wait_for_completed()
                     else:
-                        logging.info("Incorrect answer: {} {}".format(text, word))
+                        logger.info("Incorrect answer: {} {}".format(text, word))
                         first_try = False
                         say_text("Your answer {}, is not correct".format(text), robot)
                         number = random.randint(0, 9)
-                        logging.info("Bad animation number " + str(number))
+                        logger.info("Bad animation number " + str(number))
                         robot.play_anim_trigger(
                             robot.anim_triggers[bad_animations[random.randint(0, 9)]],
                             in_parallel=True, ignore_body_track=True).wait_for_completed()
@@ -295,19 +244,19 @@ def cozmo_program(robot: cozmo.robot.Robot):
             counter += 1
 
         stream.stop_stream()
-        logging.info("End of vocabulary exercise...")
-        logging.info("Start of vocabulary exercise summary...")
+        logger.info("End of vocabulary exercise...")
+        logger.info("Start of vocabulary exercise summary...")
         score = first_try_counter / dict_length
         percentage = score * 100
         percentage = round(percentage, 2)
 
-        logging.info("{} = {}/{}".format(float(percentage), int(dict_length), int(first_try_counter)))
+        logger.info("{} = {}/{}".format(float(percentage), int(dict_length), int(first_try_counter)))
 
         say_text("I would like to say, first of all, great job, {}".format(name), robot)
         say_text("Give me a nice fist bump!", robot)
-        logging.info("Starting fist bump...")
+        logger.info("Starting fist bump...")
         fist_bump(robot)
-        logging.info("Ending fist bump...")
+        logger.info("Ending fist bump...")
         say_text("You got {} correct answers out of {} questions. That is a {} percentage.".format(first_try_counter,
                                                                                                    dict_length,
                                                                                                    percentage), robot)
@@ -327,30 +276,30 @@ def cozmo_program(robot: cozmo.robot.Robot):
             robot.anim_triggers[good_animations[random.randint(0, 9)]],
             in_parallel=True, ignore_body_track=True).wait_for_completed()
 
-        logging.info("End of vocabulary exercise summary...")
+        logger.info("End of vocabulary exercise summary...")
         # -------------End of definition quiz------------------
         say_text(
             "We are now done with the vocabulary training. Please say, okay, to continue to the dialogue training.",
             robot)
 
-        logging.info("Waiting for user confirmation word...")
+        logger.info("Waiting for user confirmation word...")
 
         stream.start_stream()
         while True:
             text = get_text_from_audio()
 
             if text:
-                logging.info("Confirmation word: " + text)
+                logger.info("Confirmation word: " + text)
                 word_said = check_answer_list(text, ["okay", "ok"])
 
                 if word_said:
                     break
 
         stream.stop_stream()
-        logging.info("Confirmation word accepted...")
+        logger.info("Confirmation word accepted...")
         # ------------Beginning of dialogue training--------------
 
-        logging.info("Starting dialogue exercise...")
+        logger.info("Starting dialogue exercise...")
 
         say_text("We will now practice dialogue. This will be a telephone call.", robot)
         say_text(
@@ -389,10 +338,10 @@ def cozmo_program(robot: cozmo.robot.Robot):
             "Yes, 10 would be great.",
             "No, I think that's everything. Thank you for your help...Goodbye."]
 
-        logging.info("Entering talking loop...")
+        logger.info("Entering talking loop...")
         stream.start_stream()
         for line in lines:
-            logging.info(line)
+            logger.info(line)
             say_text(line, robot)
 
             timeout = 10  # [seconds]
@@ -404,7 +353,7 @@ def cozmo_program(robot: cozmo.robot.Robot):
                 text = recognizer.PartialResult()[17:-3]
 
                 if text:
-                    logging.info(text)
+                    logger.info(text)
                     timeout_start = time.time()
                     timeout = 3
 
@@ -412,11 +361,11 @@ def cozmo_program(robot: cozmo.robot.Robot):
                     sentence = recognizer.Result()[14:-3]
 
         stream.stop_stream()
-        logging.info("Exiting talking loop...")
-        logging.info("Ending dialogue exercise...")
+        logger.info("Exiting talking loop...")
+        logger.info("Ending dialogue exercise...")
         say_text("This is the end of the dialogue training.", robot)
 
-        logging.info("End of study dialogue...")
+        logger.info("End of study dialogue...")
 
         say_text("Thank you for participating in the study, you helped me learn more about humans, and I hope you had "
                  "fun. Give me one last fist bump!", robot)
@@ -427,23 +376,23 @@ def cozmo_program(robot: cozmo.robot.Robot):
             in_parallel=True, ignore_body_track=True).wait_for_completed()
 
     except Exception as e:
-        logging.critical(e, exc_info=True)
+        logger.critical(e, exc_info=True)
 
 
 def main(robot: cozmo.robot.Robot):
     cozmo.robot.Robot.drive_off_charger_on_connect = False
     t1 = threading.Thread(target=cozmo_program, args=(robot,))
-    t2 = threading.Thread(target=follow_face, args=(robot,))
-    logging.info("Thread 1 started...")
-    logging.info("Thread 2 started...")
+    t2 = threading.Thread(target=follow_face, args=(robot, condition))
+    logger.info("Thread 1 started...")
+    logger.info("Thread 2 started...")
     t1.start()
     t2.start()
     t1.join()
-    logging.info("Thread 1 finished...")
+    logger.info("Thread 1 finished...")
     condition.set()
     t2.join()
-    logging.info("Thread 2 finished...")
-    logging.info("Shutting down...")
+    logger.info("Thread 2 finished...")
+    logger.info("Shutting down...")
 
 
 if __name__ == "__main__":
