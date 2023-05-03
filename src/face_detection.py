@@ -3,7 +3,7 @@ from cozmo.util import degrees
 import asyncio
 import cozmo.faces
 import time
-from base_logger import logger
+from src.base_logger import logger
 
 
 def handle_face_observed(evt, face: cozmo.faces.Face, **kwargs):
@@ -15,7 +15,8 @@ def follow_face(robot: cozmo.robot.Robot, condition):
         robot.enable_facial_expression_estimation()
         logger.info("Following face...")
         face_to_follow = None
-        while not condition:
+        while not condition.is_set():
+            print("Got into function...")
             time.sleep(0.5)
             turn_action = None
             if face_to_follow:
