@@ -13,12 +13,12 @@ from src.utils import say_text
 def cozmo_program(robot: cozmo.robot.Robot):
     # Move Cozmo's head up and the lift down
     try:
-        # cozmo_vocabulary(robot)
-        # cozmo_transition(robot)
-        # cozmo_dialogue(robot)
-        # say_text("Thank you for participating in the study, you helped me learn more about humans, and I hope you had "
-        #          "fun. Give me one last fist bump!", robot)
-        # fist_bump(robot)
+        cozmo_vocabulary(robot)
+        cozmo_transition(robot)
+        cozmo_dialogue(robot)
+        say_text("Thank you for participating in the study, you helped me learn more about humans, and I hope you had "
+                 "fun. Give me one last fist bump!", robot)
+        fist_bump(robot)
         say_text("Thank youuuu, goodbye!", robot)
         robot.play_anim_trigger(
             robot.anim_triggers[213],
