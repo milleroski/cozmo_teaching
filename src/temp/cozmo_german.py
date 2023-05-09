@@ -29,7 +29,7 @@ condition = threading.Event()
 # This chunk of code HAS to be declared in the outer scope because of the get_text_from_audio function
 # Otherwise the recognizer and stream parameters remain static, which messes the speech detection up
 # Load in the vosk model
-model = vosk.Model(os.path.abspath("vosk-model-small-de-0.15"))
+model = vosk.Model(os.path.abspath("../vosk-model-small-de-0.15"))
 recognizer = vosk.KaldiRecognizer(model, 16000)
 
 # Take microphone input
