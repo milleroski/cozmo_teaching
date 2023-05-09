@@ -1,4 +1,3 @@
-# TODO: Make threading a separate file
 import threading
 from src.base_logger import logger
 from src.face_detection import follow_face
