@@ -1,10 +1,9 @@
 import cozmo
-import threading
-from src.face_detection import follow_face
 from src.base_logger import logger
 from src.speech_detection import get_text_from_audio, stream, confirmation_words, denial_words
 from src.utils import say_text, check_answer_list
 from src.animations import fist_bump
+from src.threads import start_threads
 
 
 # This file initiates everything necessary for Cozmo to run the exercises
@@ -82,23 +81,10 @@ def cozmo_initiation(robot: cozmo.robot.Robot):
     except Exception as e:
         logger.critical(e)
 
+
 def main(robot: cozmo.robot.Robot):
     # This condition is used to stop the thread looping in follow_face
-    condition = threading.Event()
-    cozmo.robot.Robot.drive_off_charger_on_connect = False
-    t1 = threading.Thread(target=cozmo_initiation, args=(robot,))
-    t2 = threading.Thread(target=follow_face, args=(robot, condition,))
-    logger.info("Thread 1 started...")
-    logger.info("Thread 2 started...")
-    t1.start()
-    t2.start()
-    t1.join()
-    logger.info("Thread 1 finished...")
-    condition.set()
-    t2.join()
-    logger.info("Thread 2 finished...")
-    logger.info("Shutting down...")
-
+    start_threads(robot, cozmo_initiation)
 
 if __name__ == "__main__":
     cozmo.run_program(main)

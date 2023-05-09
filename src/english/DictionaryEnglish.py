@@ -31,6 +31,3 @@ def load_dictionary():
             add_element(this_dict, title, definition)
 
     return this_dict
-
-
-dictionary = load_dictionary()

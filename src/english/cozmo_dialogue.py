@@ -1,7 +1,6 @@
 import cozmo
 import time
-import threading
-from src.face_detection import follow_face
+from src.threads import start_threads
 from src.base_logger import logger
 from src.utils import say_text
 from src.speech_detection import stream, recognizer
@@ -85,24 +84,10 @@ def cozmo_dialogue(robot: cozmo.robot.Robot):
     except Exception as e:
         logger.critical(e, exc_info=True)
 
+
 def main(robot: cozmo.robot.Robot):
-    # This condition is used to stop the thread looping in follow_face
-    condition = threading.Event()
-    cozmo.robot.Robot.drive_off_charger_on_connect = False
-    t1 = threading.Thread(target=cozmo_dialogue, args=(robot,))
-    t2 = threading.Thread(target=follow_face, args=(robot, condition,))
-    logger.info("Thread 1 started...")
-    logger.info("Thread 2 started...")
-    t1.start()
-    t2.start()
-    t1.join()
-    logger.info("Thread 1 finished...")
-    condition.set()
-    t2.join()
-    logger.info("Thread 2 finished...")
-    logger.info("Shutting down...")
+    start_threads(robot, cozmo_dialogue)
 
 
 if __name__ == "__main__":
     cozmo.run_program(main)
-

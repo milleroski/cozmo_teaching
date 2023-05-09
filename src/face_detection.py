@@ -1,5 +1,6 @@
 import cozmo
 from cozmo.util import degrees
+import threading
 import asyncio
 import cozmo.faces
 import time
@@ -26,7 +27,7 @@ def follow_face(robot: cozmo.robot.Robot, condition):
                 cozmo.event.oneshot(handle_face_observed)
 
                 # turn towards the face if the fist bump animation is not taking place
-                if robot.lift_ratio < 0.75:  # dependency on other function
+                if robot.lift_ratio < 0.75:
                     turn_action = robot.turn_towards_face(face_to_follow, in_parallel=True)
 
             if not (face_to_follow and face_to_follow.is_visible):
@@ -34,9 +35,9 @@ def follow_face(robot: cozmo.robot.Robot, condition):
 
                 # find a visible face, timeout if nothing found after a short while
                 try:
-                    face_to_follow = robot.world.wait_for_observed_face(timeout=1)
+                    face_to_follow = robot.world.wait_for_observed_face(timeout=30)
                 except asyncio.TimeoutError:
-                    if robot.lift_ratio < 0.75:  # dependency on other function
+                    if robot.lift_ratio < 0.75:
                         turn_action = robot.turn_in_place(degrees(45), in_parallel=True)
                     face_to_follow = None
 
@@ -46,3 +47,11 @@ def follow_face(robot: cozmo.robot.Robot, condition):
 
     except Exception as e:
         logger.critical(e, exc_info=True)
+
+def main(robot: cozmo.robot.Robot):
+    condition = threading.Event()
+    follow_face(robot, condition)
+
+
+if __name__ == "__main__":
+    cozmo.run_program(main)
