@@ -1,13 +1,11 @@
 import cozmo
-import cozmo.faces
-import threading
 from src.base_logger import logger
-from src.face_detection import follow_face
 from cozmo_vocabulary import cozmo_vocabulary
 from cozmo_transition import cozmo_transition
 from cozmo_dialogue import cozmo_dialogue
 from src.animations import fist_bump
 from src.utils import say_text
+from src.threads import start_threads
 
 
 def cozmo_program(robot: cozmo.robot.Robot):
@@ -29,21 +27,7 @@ def cozmo_program(robot: cozmo.robot.Robot):
 
 
 def main(robot: cozmo.robot.Robot):
-    # This condition is used to stop the thread looping in follow_face
-    condition = threading.Event()
-    cozmo.robot.Robot.drive_off_charger_on_connect = False
-    t1 = threading.Thread(target=cozmo_program, args=(robot,))
-    t2 = threading.Thread(target=follow_face, args=(robot, condition,))
-    logger.info("Thread 1 started...")
-    logger.info("Thread 2 started...")
-    t1.start()
-    t2.start()
-    t1.join()
-    logger.info("Thread 1 finished...")
-    condition.set()
-    t2.join()
-    logger.info("Thread 2 finished...")
-    logger.info("Shutting down...")
+    start_threads(robot, cozmo_program)
 
 
 if __name__ == "__main__":
