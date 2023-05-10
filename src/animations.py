@@ -1,6 +1,7 @@
 import cozmo
 import random
 import time
+from src.utils import say_text
 from src.base_logger import logger
 
 # Lists of good, bad, and neutral animations
@@ -40,20 +41,21 @@ def sense_bump(robot: cozmo.robot.Robot, save_acc):
 
 def fist_bump(robot: cozmo.robot.Robot):
     logger.info("In fist bump")
+    print("doing animation")
     robot.play_anim_trigger(robot.anim_triggers[199], in_parallel=True, ignore_body_track=True,
                             ignore_head_track=True).wait_for_completed()
     save_acc = robot.accelerometer
     logger.info("Entering first bump loop...")
 
-    timeout = 2  # [seconds]
+    timeout = 5  # [seconds]
     timeout_start = time.time()  # [seconds]
 
     while not sense_bump(robot, save_acc):
         print("In fist_bump loop")
-        # If 2 seconds pass, repeat give me a fist bump
 
-        if time.time() < timeout_start + timeout:
-            robot.say_text("Give me a fist bump!")
+        # If 8 seconds pass, repeat give me a fist bump
+        if time.time() >= timeout_start + timeout:
+            say_text("Give me a fist bump!", robot)
             timeout_start = time.time()
 
     logger.info("Exiting first bump loop...")

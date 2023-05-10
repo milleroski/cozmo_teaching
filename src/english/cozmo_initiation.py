@@ -1,48 +1,41 @@
 import cozmo
 from src.base_logger import logger
-from src.speech_detection import get_text_from_audio, stream, confirmation_words, denial_words
+from src.speech_detection import stream, confirmation_words, denial_words
 from src.utils import say_text, check_answer_list
 from src.animations import fist_bump
 from src.threads import start_threads
+from src.cubes import press_cube_to_speak
 
 
 # This file initiates everything necessary for Cozmo to run the exercises
 
 def get_name(robot: cozmo.robot.Robot):
     say_text("What is your name? Please answer with ONLY, your name, not with a sentence", robot)
-    something_said = False
-    stopped_talking = False
+    question_answered = False
+    got_name = False
     name = ""
     stream.start_stream()
     logger.info("Entering name loop...")
-    while not (something_said and stopped_talking):
+    while not question_answered:
 
-        text = get_text_from_audio()
+        text = press_cube_to_speak(robot)
 
         if text:
-            logger.info("Name: " + text)
-            name += text
-            something_said = True
 
-        elif something_said:
-            stopped_talking = True
+            if not got_name:
+                name = text
+                got_name = True
+                logger.info("Name: " + text)
+                say_text("So your name is {}, correct?".format(name), robot)
+            else:
+                if check_answer_list(text, confirmation_words):
+                    print("Confirmation received...")
+                    question_answered = True
+                elif check_answer_list(text, denial_words):
+                    got_name = False
+                    name = ""
+                    say_text("Ok, what is your name?", robot)
 
-            say_text("So your name is {}, correct?".format(name), robot)
-            question_answered = False
-            while not question_answered:
-
-                text = get_text_from_audio()
-
-                if text:
-                    logger.info("Confirmation: " + text)
-                    if check_answer_list(text, confirmation_words):
-                        question_answered = True
-                    elif check_answer_list(text, denial_words):
-                        question_answered = True
-                        something_said = False
-                        stopped_talking = False
-                        name = ""
-                        say_text("Ok, what is your name?", robot)
     stream.stop_stream()
     logger.info("Exiting name loop...")
     return name
@@ -50,7 +43,7 @@ def get_name(robot: cozmo.robot.Robot):
 
 def cozmo_initiation(robot: cozmo.robot.Robot):
     try:
-        robot.set_robot_volume(0.1)
+        robot.set_robot_volume(0.7)
         logger.info("Preparation started...")
         logger.info("current battery voltage: " + str(robot.battery_voltage) + "V")
 
@@ -85,6 +78,7 @@ def cozmo_initiation(robot: cozmo.robot.Robot):
 def main(robot: cozmo.robot.Robot):
     # This condition is used to stop the thread looping in follow_face
     start_threads(robot, cozmo_initiation)
+
 
 if __name__ == "__main__":
     cozmo.run_program(main)

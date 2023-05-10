@@ -1,6 +1,7 @@
 from src.utils import say_text, check_answer_list
-from src.speech_detection import stream, get_text_from_audio
+from src.speech_detection import stream
 from src.base_logger import logger
+from src.cubes import press_cube_to_speak
 
 
 def cozmo_transition(robot):
@@ -12,7 +13,7 @@ def cozmo_transition(robot):
 
     stream.start_stream()
     while True:
-        text = get_text_from_audio()
+        text = press_cube_to_speak(robot)
 
         if text:
             logger.info("Confirmation word: " + text)

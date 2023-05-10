@@ -34,11 +34,16 @@ def exercise_explanation(robot):
 
 
 def dialogue_recognizer(lines, robot):
+
+    cube = robot.world.get_light_cube(1)
+
     logger.info("Entering talking loop...")
     stream.start_stream()
     for line in lines:
         logger.info(line)
+        cube.set_lights(cozmo.lights.red_light)
         say_text(line, robot)
+        cube.set_lights(cozmo.lights.green_light)
 
         timeout = 10  # [seconds]
         timeout_start = time.time()  # [seconds]
@@ -49,9 +54,10 @@ def dialogue_recognizer(lines, robot):
             text = recognizer.PartialResult()[17:-3]
 
             if text:
+                cube.set_lights(cozmo.lights.blue_light)
                 logger.info(text)
                 timeout_start = time.time()
-                timeout = 3
+                timeout = 1
 
             if recognizer.AcceptWaveform(data):
                 sentence = recognizer.Result()[14:-3]
