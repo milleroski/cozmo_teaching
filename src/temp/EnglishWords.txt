@@ -6,7 +6,7 @@ customer - A person who buys goods or services from a shop or business.
 
 department - A division of a large organization such as a government, university, or business, dealing with a specific area of activity.
 
-extension - A part that is added to a phone number to reach a particular person or department.
+extension - A part that is added to a telephone number to reach a particular person or department.
 
 land line - A telephone that transmits the signal through a wire, rather than through wireless transmission as is the case with mobile phones.
 
