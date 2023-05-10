@@ -1,0 +1,31 @@
+Cozmo(sales representative Jewels and Things): ring ring...ring ring...ring ring...
+
+Student (Secretary): Hello, this is (students name) speaking. How may I be of help to you today?
+
+Cozmo: Yes, this is Ms. Janice Anderson (or Cozmo) calling. May I speak to Mr. Franks, please?
+
+Student: I'm afraid Mr. Franks is out of the office at the moment. Would you like me to take a message?
+
+Cozmo: Uhm...actually, this call is rather urgent. We spoke yesterday about a delivery problem that Mr. Franks mentioned. Did he leave any information with you?
+
+Student: As a matter of fact, he did not. Could you explain the problem to me?
+
+Cozmo: Yes, the shipment was delayed from France. But it is on the way now. Could I schedule a meeting with Mr. Frank on Thursday afternoon?
+
+Student: I'm afraid he's meeting with some clients out of town. How about Thursday morning?
+
+Cosmo: Unfortunately, that doesn’t suit me. Is he doing anything on Friday morning?
+
+Student: No, it looks like he's free then.
+
+Cozmo: Great, should I come by at 9?
+
+Student: Well, he usually holds a staff meeting at 9. It only lasts a half-hour or so. How about 10?
+
+Cozmo: Yes, 10 would be great.
+
+Student: OK, I'll schedule that. Cozmo 10, Friday Morning...Is there anything else I can help you with?
+
+Cozmo: No, I think that's everything. Thank you for your help...Goodbye.
+
+Student: Goodbye.
