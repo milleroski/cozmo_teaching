@@ -1,7 +1,7 @@
 import vosk
 import pyaudio
 import os
-from base_logger import logger
+from src.base_logger import logger
 
 # This chunk of code HAS to be declared in the outer scope because of the get_text_from_audio function
 # Otherwise the recognizer and stream parameters remain static, which messes the speech detection up

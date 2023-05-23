@@ -1,7 +1,7 @@
 import cozmo
 from src.base_logger import logger
 from src.speech_detection import stream
-from src.utils import say_text, check_answer, check_answer_list
+from src.utils import say_text, check_answer_list
 from src.speech_detection import confirmation_words, denial_words
 from src.animations import play_random_good_animation, play_random_bad_animation, fist_bump
 from DictionaryEnglish import load_dictionary
@@ -37,6 +37,7 @@ def definition_exercise(robot):
         correct = False
         first_try = True
         definition = dictionary.get(dict_keys[counter])[0]
+        synonyms = dictionary.get(dict_keys[counter])[1]
         word = dict_keys[counter]
 
         say_text("Question {}, {}".format(str(counter + 1), definition), robot)
@@ -67,7 +68,7 @@ def definition_exercise(robot):
 
                     continue
 
-                correct = check_answer(text.replace(" ", ""), word.replace(" ", ""))
+                correct = check_answer_list(text.replace(" ", ""), synonyms)
 
                 if correct:
                     logger.info("Correct answer: {} {}".format(text, word))
