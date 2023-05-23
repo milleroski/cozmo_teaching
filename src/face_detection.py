@@ -8,16 +8,15 @@ from src.base_logger import logger
 
 
 def handle_face_observed(evt, face: cozmo.faces.Face, **kwargs):
-    logger.info(face.expression + "-" + str(face.expression_score))
+    logger.info("FACE: " + face.expression + "-" + str(face.expression_score))
 
 
 def follow_face(robot: cozmo.robot.Robot, condition):
     try:
         robot.enable_facial_expression_estimation()
-        logger.info("Following face...")
+        logger.info("FACE: Following face...")
         face_to_follow = None
         while not condition.is_set():
-            print("Got into function...")
             time.sleep(0.5)
             turn_action = None
             if face_to_follow:
@@ -31,7 +30,7 @@ def follow_face(robot: cozmo.robot.Robot, condition):
                     turn_action = robot.turn_towards_face(face_to_follow, in_parallel=True)
 
             if not (face_to_follow and face_to_follow.is_visible):
-                logger.info("Lost face, searching...")
+                logger.info("FACE: Lost face, searching...")
 
                 # find a visible face, timeout if nothing found after a short while
                 try:
@@ -47,6 +46,7 @@ def follow_face(robot: cozmo.robot.Robot, condition):
 
     except Exception as e:
         logger.critical(e, exc_info=True)
+
 
 def main(robot: cozmo.robot.Robot):
     condition = threading.Event()

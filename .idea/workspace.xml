@@ -4,26 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="57059904-b49d-4850-a59c-27d754443516" name="Changes" comment="Put threading handling in separate function. Fist_bump now asks repeats the prompt after 3 seconds. Refactored cozmo_vocabulary.py into methods.">
+    <list default="true" id="57059904-b49d-4850-a59c-27d754443516" name="Changes" comment="Commit to finally preserve the entire PyCharm project instead of having two seperate versions">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/english/DictionaryEnglish.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/english/DictionaryEnglish.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/english/cozmo_vocabulary.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/english/cozmo_vocabulary.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/speech_detection.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/speech_detection.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/vosk-model-small-de-0.15/COPYING" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/vosk-model-small-de-0.15/README" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/vosk-model-small-de-0.15/am/final.mdl" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/vosk-model-small-de-0.15/conf/mfcc.conf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/vosk-model-small-de-0.15/conf/model.conf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/vosk-model-small-de-0.15/graph/Gr.fst" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/vosk-model-small-de-0.15/graph/HCLr.fst" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/vosk-model-small-de-0.15/graph/disambig_tid.int" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/vosk-model-small-de-0.15/graph/phones/word_boundary.int" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/vosk-model-small-de-0.15/ivector/final.dubm" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/vosk-model-small-de-0.15/ivector/final.ie" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/vosk-model-small-de-0.15/ivector/final.mat" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/vosk-model-small-de-0.15/ivector/global_cmvn.stats" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/vosk-model-small-de-0.15/ivector/online_cmvn.conf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/vosk-model-small-de-0.15/ivector/splice.conf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/text_files/Combined.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/text_files/EnglishWords.txt" beforeDir="false" afterPath="$PROJECT_DIR$/text_files/EnglishWords.txt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -40,7 +26,7 @@
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="main" />
+        <entry key="$PROJECT_DIR$" value="cube_feature" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -57,7 +43,7 @@
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "main",
+    "git-widget-placeholder": "synonym__feature",
     "ignore.virus.scanning.warn.message": "true",
     "last_opened_file_path": "D:/Programming/CozmoSDK/cozmo_teaching/src/temp",
     "settings.editor.selected.configurable": "reference.idesettings.debugger.python"
@@ -74,7 +60,7 @@
     </key>
   </component>
   <component name="RunManager" selected="Python.cozmo_vocabulary">
-    <configuration name="02_face_follower (1)" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+    <configuration name="DictionaryEnglish" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="cozmo_teaching" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -82,11 +68,11 @@
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
       <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/../../../Bachelors_Thesis/cozmo_sdk_examples_1.4.10/tutorials/03_vision" />
-      <option name="IS_MODULE_SDK" value="false" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/src/english" />
+      <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/../../../Bachelors_Thesis/cozmo_sdk_examples_1.4.10/tutorials/03_vision/02_face_follower.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/src/english/DictionaryEnglish.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -95,7 +81,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="07_lookaround" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+    <configuration name="animations" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="cozmo_teaching" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -103,11 +89,53 @@
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
       <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/../../../Bachelors_Thesis/cozmo_sdk_examples_1.4.10/tutorials/04_cubes_and_objects" />
-      <option name="IS_MODULE_SDK" value="false" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/src" />
+      <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/../../../Bachelors_Thesis/cozmo_sdk_examples_1.4.10/tutorials/04_cubes_and_objects/07_lookaround.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/src/animations.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="cozmo_dialogue" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="cozmo_teaching" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/src/english" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/src/english/cozmo_dialogue.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="cozmo_initiation" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="cozmo_teaching" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/src/english" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/src/english/cozmo_initiation.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -137,55 +165,13 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="cubes" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
-      <module name="cozmo_teaching" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/src" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/src/cubes.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
-    <configuration name="face_detection" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
-      <module name="cozmo_teaching" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/src" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/src/face_detection.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
     <recent_temporary>
       <list>
         <item itemvalue="Python.cozmo_vocabulary" />
-        <item itemvalue="Python.cubes" />
-        <item itemvalue="Python.face_detection" />
-        <item itemvalue="Python.02_face_follower (1)" />
-        <item itemvalue="Python.07_lookaround" />
+        <item itemvalue="Python.DictionaryEnglish" />
+        <item itemvalue="Python.cozmo_dialogue" />
+        <item itemvalue="Python.cozmo_initiation" />
+        <item itemvalue="Python.animations" />
       </list>
     </recent_temporary>
   </component>
@@ -226,7 +212,21 @@
       <option name="project" value="LOCAL" />
       <updated>1683633980506</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="Commit to finally preserve the entire PyCharm project instead of having two seperate versions">
+      <created>1683720921582</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1683720921582</updated>
+    </task>
+    <task id="LOCAL-00006" summary="Commit to finally preserve the entire PyCharm project instead of having two seperate versions">
+      <created>1683720993927</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1683720993927</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -255,7 +255,7 @@
                   <entry key="branch">
                     <value>
                       <list>
-                        <option value="main" />
+                        <option value="cube_feature" />
                       </list>
                     </value>
                   </entry>
@@ -270,6 +270,7 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Complete refactoring of the code. Everything is now separated into individual files to improve readability. This has been tested, it runs flawlessly." />
     <MESSAGE value="Put threading handling in separate function. Fist_bump now asks repeats the prompt after 3 seconds. Refactored cozmo_vocabulary.py into methods." />
-    <option name="LAST_COMMIT_MESSAGE" value="Put threading handling in separate function. Fist_bump now asks repeats the prompt after 3 seconds. Refactored cozmo_vocabulary.py into methods." />
+    <MESSAGE value="Commit to finally preserve the entire PyCharm project instead of having two seperate versions" />
+    <option name="LAST_COMMIT_MESSAGE" value="Commit to finally preserve the entire PyCharm project instead of having two seperate versions" />
   </component>
 </project>

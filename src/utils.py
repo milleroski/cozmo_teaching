@@ -20,4 +20,5 @@ def check_answer(text, phrase):
 
 
 def say_text(text, robot: cozmo.robot.Robot):
+    logger.info("UTILS: Saying text: " + text)
     robot.say_text(text, duration_scalar=0.7, in_parallel=True).wait_for_completed()

@@ -1,13 +1,13 @@
 import cozmo
-import time
 from src.base_logger import logger
 from src.speech_detection import stream
-from src.utils import say_text, check_answer, check_answer_list
-from src.speech_detection import get_text_from_audio, confirmation_words, denial_words
+from src.utils import say_text, check_answer_list
+from src.speech_detection import confirmation_words, denial_words
 from src.animations import play_random_good_animation, play_random_bad_animation, fist_bump
 from DictionaryEnglish import load_dictionary
 from cozmo_initiation import cozmo_initiation
 from src.threads import start_threads
+from src.cubes import press_cube_to_speak
 
 # Global variables relevant to all functions
 name = ""
@@ -17,6 +17,7 @@ dict_length = len(dictionary)
 
 
 def definition_exercise(robot):
+
     logger.info("Start of vocabulary exercise...")
     # Initiate the dictionary and get the definitions + the length
     say_text(
@@ -36,15 +37,13 @@ def definition_exercise(robot):
         correct = False
         first_try = True
         definition = dictionary.get(dict_keys[counter])[0]
+        synonyms = dictionary.get(dict_keys[counter])[1]
         word = dict_keys[counter]
 
         say_text("Question {}, {}".format(str(counter + 1), definition), robot)
 
-        timeout = 2  # [seconds]
-        timeout_start = time.time()  # [seconds]
-
         while not correct:
-            text = get_text_from_audio()
+            text = press_cube_to_speak(robot)
 
             # If the user answers, then check if the answer is correct
             if text:
@@ -69,7 +68,7 @@ def definition_exercise(robot):
 
                     continue
 
-                correct = check_answer(text.replace(" ", ""), word.replace(" ", ""))
+                correct = check_answer_list(text.replace(" ", ""), synonyms)
 
                 if correct:
                     logger.info("Correct answer: {} {}".format(text, word))
