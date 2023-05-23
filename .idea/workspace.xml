@@ -6,21 +6,10 @@
   <component name="ChangeListManager">
     <list default="true" id="57059904-b49d-4850-a59c-27d754443516" name="Changes" comment="Commit to finally preserve the entire PyCharm project instead of having two seperate versions">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/animations.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/animations.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/base_logger.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/base_logger.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/cubes.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/cubes.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/english/DictionaryEnglish.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/english/DictionaryEnglish.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/english/cozmo_dialogue.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/english/cozmo_dialogue.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/english/cozmo_initiation.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/english/cozmo_initiation.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/english/cozmo_transition.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/english/cozmo_transition.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/english/cozmo_vocabulary.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/english/cozmo_vocabulary.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/face_detection.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/face_detection.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/speech_detection.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/speech_detection.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/temp/DictionaryGerman.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/temp/EnglishWords.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/temp/cozmo_german.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/threads.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/threads.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/utils.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/text_files/EnglishWords.txt" beforeDir="false" afterPath="$PROJECT_DIR$/text_files/EnglishWords.txt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -37,7 +26,7 @@
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="main" />
+        <entry key="$PROJECT_DIR$" value="cube_feature" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -54,7 +43,7 @@
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "cube__feature",
+    "git-widget-placeholder": "synonym__feature",
     "ignore.virus.scanning.warn.message": "true",
     "last_opened_file_path": "D:/Programming/CozmoSDK/cozmo_teaching/src/temp",
     "settings.editor.selected.configurable": "reference.idesettings.debugger.python"
@@ -70,7 +59,28 @@
       <recent name="D:\Programming\CozmoSDK\cozmo_teaching\src" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.cozmo_dialogue">
+  <component name="RunManager" selected="Python.cozmo_vocabulary">
+    <configuration name="DictionaryEnglish" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="cozmo_teaching" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/src/english" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/src/english/DictionaryEnglish.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <configuration name="animations" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="cozmo_teaching" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -155,34 +165,13 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="speech_detection" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
-      <module name="cozmo_teaching" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/src" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/src/speech_detection.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.cozmo_dialogue" />
         <item itemvalue="Python.cozmo_vocabulary" />
+        <item itemvalue="Python.DictionaryEnglish" />
+        <item itemvalue="Python.cozmo_dialogue" />
         <item itemvalue="Python.cozmo_initiation" />
         <item itemvalue="Python.animations" />
-        <item itemvalue="Python.speech_detection" />
       </list>
     </recent_temporary>
   </component>

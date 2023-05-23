@@ -1,6 +1,6 @@
 attachment - Any kind of document that you add to an email.
 
-conference room - A space usually set aside for people to get together, often informally to hold meetings, for issues to be discussed, priorities set and decisions made.
+conference room + meeting room - A space usually set aside for people to get together, often informally to hold meetings, for issues to be discussed, priorities set and decisions made.
 
 customer - A person who buys goods or services from a shop or business.
 
@@ -12,4 +12,4 @@ land line - A telephone that transmits the signal through a wire, rather than th
 
 voicemail - An electronically stored voice message that is left by a caller to be retrieved.
 
-zip code - A number that identifies a particular postal delivery area which is also part of your address.
+zip code + postal code + postcode - A number that identifies a particular postal delivery area which is also part of your address.
