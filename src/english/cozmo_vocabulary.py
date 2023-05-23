@@ -17,7 +17,6 @@ dict_length = len(dictionary)
 
 
 def definition_exercise(robot):
-
     logger.info("Start of vocabulary exercise...")
     # Initiate the dictionary and get the definitions + the length
     say_text(

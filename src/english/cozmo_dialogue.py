@@ -1,9 +1,23 @@
 import cozmo
 import time
+import os
 from src.threads import start_threads
 from src.base_logger import logger
 from src.utils import say_text
 from src.speech_detection import stream, recognizer
+
+
+def load_lines():
+    lines = []
+
+    # Read the text file and write it into list, also, get rid of unnecessary lines
+    with open(os.path.abspath("../../text_files/EnglishDialogue.txt"), encoding='utf8') as _:
+        for line in _:
+            line = line.strip()
+            if line:
+                lines.append(line)
+
+    return lines
 
 
 def exercise_explanation(robot):
@@ -34,7 +48,6 @@ def exercise_explanation(robot):
 
 
 def dialogue_recognizer(lines, robot):
-
     cube = robot.world.get_light_cube(1)
 
     logger.info("Entering talking loop...")
@@ -71,17 +84,7 @@ def cozmo_dialogue(robot: cozmo.robot.Robot):
 
         exercise_explanation(robot)
 
-        lines = [
-            "ring ring, ring ring, ring ring",
-            "Yes, this is Cozmo calling. May I speak to Mr. Franks, please?",
-            "Uhm...actually, this call is rather urgent. We spoke yesterday about a delivery problem that Mr. Franks "
-            "mentioned. Did he leave any information with you?",
-            "Yes, the shipment was delayed from France. But it is on the way now. Could I schedule a meeting with Mr. "
-            "Frank on Thursday afternoon?",
-            "Unfortunately, that doesn't suit me. Is he doing anything on Friday morning?",
-            "Great, should I come by at 9?",
-            "Yes, 10 would be great.",
-            "No, I think that's everything. Thank you for your help...Goodbye."]
+        lines = load_lines()
 
         dialogue_recognizer(lines, robot)
         logger.info("Ending dialogue exercise...")
