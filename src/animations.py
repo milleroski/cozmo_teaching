@@ -5,16 +5,16 @@ from src.utils import say_text
 from src.base_logger import logger
 
 # Lists of good, bad, and neutral animations
-bad_animations = [4, 5, 17, 21, 25, 27, 54, 63, 64, 65]
-neutral_animations = [3, 18, 22, 40, 51, 58, 61, 77, 78, 80]
+bad_animations = [63, 65]
 good_animations = [1, 7, 23, 26, 30, 31, 35, 50, 57, 68]
+listening_animations = [2, 3, 7, 18, 22]
 
 
 def play_random_bad_animation(robot: cozmo.robot.Robot):
-    number = random.randint(0, 9)
+    number = random.randint(0, 1)
     logger.info("Bad animation number " + str(number))
     robot.play_anim_trigger(
-        robot.anim_triggers[bad_animations[random.randint(0, 9)]],
+        robot.anim_triggers[bad_animations[number]],
         in_parallel=True, ignore_body_track=True).wait_for_completed()
     robot.set_head_angle(cozmo.robot.MAX_HEAD_ANGLE, in_parallel=True).wait_for_completed()
 
@@ -26,6 +26,14 @@ def play_random_good_animation(robot: cozmo.robot.Robot):
         robot.anim_triggers[good_animations[number]],
         in_parallel=True, ignore_body_track=True).wait_for_completed()
     robot.set_head_angle(cozmo.robot.MAX_HEAD_ANGLE, in_parallel=True).wait_for_completed()
+
+
+def play_random_listening_animation(robot: cozmo.robot.Robot):
+    number = random.randint(0, 2)
+    logger.info("Listening animation number " + str(number))
+    robot.play_anim_trigger(
+        robot.anim_triggers[listening_animations[number]],
+        in_parallel=True, ignore_head_track=True).wait_for_completed()
 
 
 def sense_bump(robot: cozmo.robot.Robot, save_acc):
@@ -63,3 +71,11 @@ def fist_bump(robot: cozmo.robot.Robot):
                             ignore_head_track=True).wait_for_completed()
     robot.set_head_angle(cozmo.robot.MAX_HEAD_ANGLE, in_parallel=True).wait_for_completed()
     robot.set_lift_height(0, in_parallel=True)
+
+
+def main(robot: cozmo.robot.Robot):
+    epic = "epic"
+
+
+if __name__ == "__main__":
+    cozmo.run_program(main)
