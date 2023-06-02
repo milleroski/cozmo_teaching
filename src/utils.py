@@ -1,5 +1,20 @@
 import cozmo
+import os
+import random
 from src.base_logger import logger
+
+
+# Function that takes a list of common english words and picks three out of the list at random.
+def three_random_words():
+    words = []
+    with open(os.path.abspath("../text_files/common_words.txt"), encoding='utf8') as _:
+        for line in _:
+            line = line.strip()
+            if line:
+                words.append(line)
+
+    picked_words = random.sample(words, 3)
+    return picked_words
 
 
 def check_answer_list(text, phrase):

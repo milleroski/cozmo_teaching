@@ -34,3 +34,6 @@ def main(robot: cozmo.robot.Robot):
 if __name__ == "__main__":
     cozmo.robot.Robot.drive_off_charger_on_connect = False
     cozmo.run_program(main)
+
+# TODO: Add proper cube initiation, you can't just assume that they're all going to be charged.
+# TODO: Add backup in case cubes don't work at all (LIKE LITERALLY RIGHT NOW.)

@@ -1,7 +1,8 @@
 import cozmo
+import random
 from src.base_logger import logger
 from src.speech_detection import stream
-from src.utils import say_text, check_answer_list
+from src.utils import say_text, check_answer_list, three_random_words
 from src.speech_detection import confirmation_words, denial_words
 from src.animations import play_random_good_animation, play_random_bad_animation, fist_bump
 from DictionaryEnglish import load_dictionary
@@ -16,6 +17,22 @@ dict_keys = list(dictionary.keys())
 dict_length = len(dictionary)
 
 
+def give_hint(robot, score, word):
+    if score == -1:
+        first_letter = word[0]
+        say_text("Here's a hint: the word begins with the letter, {}".format(first_letter), robot)
+    elif score == -2:
+        word_length = len(word)
+        say_text("Here's another hint: the word has, {}, letters.".format(word_length), robot)
+    elif score <= -3:
+        picked_words = three_random_words() + word
+        random.shuffle(picked_words)
+        say_text("Which one of these words is the correct one?", robot)
+
+        for answer in picked_words:
+            say_text(answer, robot)
+
+
 def definition_exercise(robot):
     logger.info("Start of vocabulary exercise...")
     # Initiate the dictionary and get the definitions + the length
@@ -28,6 +45,7 @@ def definition_exercise(robot):
     try_again_flag = False
     counter = 0
     first_try_counter = 0
+    score = 0
 
     stream.start_stream()
 
@@ -42,6 +60,7 @@ def definition_exercise(robot):
         say_text("Question {}, {}".format(str(counter + 1), definition), robot)
 
         while not correct:
+
             text = press_cube_to_speak(robot)
 
             # If the user answers, then check if the answer is correct
@@ -58,6 +77,7 @@ def definition_exercise(robot):
                     if check_answer_list(text, confirmation_words):
                         try_again_flag = False
                         say_text("Question {}, {}".format(str(counter + 1), definition), robot)
+                        give_hint(robot, score, word)
 
                     elif check_answer_list(text, denial_words):
                         try_again_flag = False
@@ -80,10 +100,12 @@ def definition_exercise(robot):
                     play_random_bad_animation(robot)
                     try_again_flag = True
                     say_text("Would you like to try again?", robot)
+                    score -= 1
 
         if first_try:
             first_try_counter += 1
 
+        score = 0
         counter += 1
     stream.stop_stream()
     logger.info("End of vocabulary exercise...")
@@ -104,11 +126,11 @@ def exercise_summary(first_try_counter, robot):
     say_text("You got {} correct answers out of {} questions. That is a {} percentage.".format(first_try_counter,
                                                                                                dict_length,
                                                                                                percentage), robot)
-    if percentage >= 90:
+    if percentage >= 70:
         say_text("Fantastic job! I'm impressed!", robot)
-    elif percentage >= 70:
-        say_text("Good job! That was good!", robot)
     elif percentage >= 50:
+        say_text("Good job! That was good!", robot)
+    elif percentage >= 30:
         say_text("You are getting there. Don't give up and let's keep practicing!", robot)
     else:
         say_text(

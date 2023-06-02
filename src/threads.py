@@ -7,7 +7,7 @@ def start_threads(robot, t1_name):
     condition = threading.Event()
     t1 = threading.Thread(target=t1_name, args=(robot,))
     t2 = threading.Thread(target=follow_face, args=(robot, condition,))
-    logger.info("THREADS: Thread 1 " + t1_name + " started...")
+    logger.info("THREADS: Thread 1 " + str(t1_name) + " started...")
     logger.info("THREADS: Thread 2 follow_face started...")
     t1.start()
     t2.start()
