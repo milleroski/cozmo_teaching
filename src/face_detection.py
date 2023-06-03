@@ -17,7 +17,6 @@ def follow_face(robot: cozmo.robot.Robot, condition):
         logger.info("FACE: Following face...")
         face_to_follow = None
         while not condition.is_set():
-            time.sleep(0.5)
             turn_action = None
             if face_to_follow:
                 # Log the facial recognition...start turning towards the face
@@ -43,6 +42,8 @@ def follow_face(robot: cozmo.robot.Robot, condition):
             if turn_action:
                 # Complete the turn action if one was in progress
                 turn_action.wait_for_completed()
+
+            time.sleep(.1)
 
     except Exception as e:
         logger.critical(e, exc_info=True)
