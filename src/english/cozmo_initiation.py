@@ -35,6 +35,8 @@ def get_name(robot: cozmo.robot.Robot):
                     got_name = False
                     name = ""
                     say_text("Ok, what is your name?", robot)
+                else:
+                    say_text("Can you repeat that? Please answer with, yes, or, no.", robot)
 
     stream.stop_stream()
     logger.info("Exiting name loop...")

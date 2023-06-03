@@ -17,17 +17,29 @@ dict_keys = list(dictionary.keys())
 dict_length = len(dictionary)
 
 
-def give_hint(robot, score, word):
+def give_hint(robot, score, answer: str):
     logger.info("VOCAB: Giving hint... Score = {}".format(score))
 
     if score == -1:
-        first_letter = word[0]
+        first_letter = answer[0]
         say_text("Here's a hint: the word begins with the letter, {}".format(first_letter), robot)
+
     elif score == -2:
-        word_length = len(word)
-        say_text("Here's another hint: the word has, {}, letters.".format(word_length), robot)
+        word_length = len(answer)
+        words = [answer]
+
+        if " " in answer:
+            words = answer.split(" ")
+
+        word_amount = len(words)
+
+        if word_amount == 1:
+            say_text("Here's another hint: the answer is a single word with {} letters.".format(word_length), robot)
+        else:
+            say_text("Here's another hint: the answer has {} words.".format(word_amount), robot)
+
     elif score <= -3:
-        picked_words = three_random_words() + [word]
+        picked_words = three_random_words() + [answer]
         random.shuffle(picked_words)
         say_text("Which one of these words is the correct one?", robot)
 
@@ -70,10 +82,13 @@ def definition_exercise(robot):
 
                 logger.info("VOCAB: " + text)
 
-                # if check_answer_list(text, skip_words):
-                #     say_text("You're not sure? Do you want a hint or should we skip this question?", robot)
-                #
-                #     logger.info("VOCAB: User answering skip answer")
+                # If the user isn't sure about the question, cozmo asks if the user wants a hint or to skip the question
+                if check_answer_list(text, skip_words):
+                    try_again_flag = True
+                    say_text("You're not sure? Do you want a clue?", robot)
+                    say_text("Say, yes, to get a clue, say, no, to skip the question.", robot)
+                    logger.info("VOCAB: User answering skip answer")
+                    continue
 
                 # If the try_again_flag is set, make user stuck in the first part of the loop until he says yes or no
                 if try_again_flag:
@@ -84,6 +99,7 @@ def definition_exercise(robot):
                     if check_answer_list(text, confirmation_words):
                         try_again_flag = False
                         say_text("Question {}, {}".format(str(counter + 1), definition), robot)
+                        score -= 1
                         give_hint(robot, score, word)
 
                     elif check_answer_list(text, denial_words):
@@ -91,7 +107,8 @@ def definition_exercise(robot):
                         say_text("The word is {}.".format(word), robot)
                         say_text("It means {}".format(definition), robot)
                         break
-
+                    else:
+                        say_text("Can you repeat that? Please answer with, yes, or, no.", robot)
                     continue
 
                 correct = check_answer_list(text.replace(" ", ""), synonyms)
@@ -107,7 +124,6 @@ def definition_exercise(robot):
                     play_random_bad_animation(robot)
                     try_again_flag = True
                     say_text("Would you like to try again?", robot)
-                    score -= 1
 
         if first_try:
             first_try_counter += 1
