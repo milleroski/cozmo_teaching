@@ -11,8 +11,10 @@ listening_animations = [2, 3, 7, 18, 22]
 
 
 def play_random_bad_animation(robot: cozmo.robot.Robot):
+
     number = random.randint(0, 1)
     logger.info("Bad animation number " + str(number))
+
     robot.play_anim_trigger(
         robot.anim_triggers[bad_animations[number]],
         in_parallel=True, ignore_body_track=True).wait_for_completed()
@@ -21,7 +23,7 @@ def play_random_bad_animation(robot: cozmo.robot.Robot):
 
 def play_random_good_animation(robot: cozmo.robot.Robot):
     number = random.randint(0, 9)
-    logger.info("Good animation number " + str(number))
+    logger.info("ANIM: Good animation number " + str(number))
     robot.play_anim_trigger(
         robot.anim_triggers[good_animations[number]],
         in_parallel=True, ignore_body_track=True).wait_for_completed()
@@ -48,25 +50,25 @@ def sense_bump(robot: cozmo.robot.Robot, save_acc):
 
 
 def fist_bump(robot: cozmo.robot.Robot):
-    logger.info("In fist bump")
+    logger.info("ANIM: In fist_bump")
     print("doing animation")
     robot.play_anim_trigger(robot.anim_triggers[199], in_parallel=True, ignore_body_track=True,
                             ignore_head_track=True).wait_for_completed()
     save_acc = robot.accelerometer
-    logger.info("Entering first bump loop...")
+    logger.info("ANIM: Entering first bump loop...")
 
     timeout = 5  # [seconds]
     timeout_start = time.time()  # [seconds]
 
     while not sense_bump(robot, save_acc):
-        print("In fist_bump loop")
+        print("ANIM: In fist_bump loop")
 
         # If 8 seconds pass, repeat give me a fist bump
         if time.time() >= timeout_start + timeout:
             say_text("Give me a fist bump!", robot)
             timeout_start = time.time()
 
-    logger.info("Exiting first bump loop...")
+    logger.info("ANIM: Exiting first bump loop...")
     robot.play_anim_trigger(robot.anim_triggers[201], in_parallel=True, ignore_body_track=True,
                             ignore_head_track=True).wait_for_completed()
     robot.set_head_angle(cozmo.robot.MAX_HEAD_ANGLE, in_parallel=True).wait_for_completed()
