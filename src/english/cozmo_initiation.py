@@ -4,7 +4,7 @@ from src.speech_detection import stream, confirmation_words, denial_words
 from src.utils import say_text, check_answer_list
 from src.animations import fist_bump
 from src.threads import start_threads
-from src.cubes import press_cube_to_speak
+from src.cubes import press_cube_to_speak, init_cubes
 
 
 # This file initiates everything necessary for Cozmo to run the exercises
@@ -44,15 +44,15 @@ def get_name(robot: cozmo.robot.Robot):
 def cozmo_initiation(robot: cozmo.robot.Robot):
     try:
         robot.set_robot_volume(0.7)
-        logger.info("Preparation started...")
-        logger.info("current battery voltage: " + str(robot.battery_voltage) + "V")
+        logger.info("INIT: Preparation started...")
+        logger.info("INIT: current battery voltage: " + str(robot.battery_voltage) + "V")
 
         robot.set_head_angle(cozmo.robot.MAX_HEAD_ANGLE, in_parallel=True).wait_for_completed()
         robot.set_lift_height(0, in_parallel=True)
 
-        logger.info("Preparation ended...")
+        logger.info("INIT: Preparation ended...")
         # -------------Initiation and name-----------------------
-        logger.info("Start of introduction...")
+        logger.info("INIT: Start of introduction...")
         say_text("Hi there! I'm Cozmo! Your language learning companion!", robot)
         say_text("You can interact with me through the microphone when I ask questions!", robot)
         say_text(
@@ -63,11 +63,11 @@ def cozmo_initiation(robot: cozmo.robot.Robot):
         name = get_name(robot)
         say_text("Ok, {}, Give me a nice fist bump!".format(name), robot)
 
-        logger.info("Starting fist bump...")
+        logger.info("INIT: Starting fist bump...")
         fist_bump(robot)
-        logger.info("Ending fist bump...")
+        logger.info("INIT: Ending fist bump...")
 
-        logger.info("End of introduction...")
+        logger.info("INIT: End of introduction...")
 
         return name
 

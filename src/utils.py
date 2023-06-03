@@ -6,8 +6,11 @@ from src.base_logger import logger
 
 # Function that takes a list of common english words and picks three out of the list at random.
 def three_random_words():
+    file_directory = os.path.dirname(__file__)
+    word_directory = os.path.join(file_directory, '../text_files/common_words.txt')
+
     words = []
-    with open(os.path.abspath("../text_files/common_words.txt"), encoding='utf8') as _:
+    with open(word_directory, encoding='utf8') as _:
         for line in _:
             line = line.strip()
             if line:

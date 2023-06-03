@@ -19,6 +19,7 @@ stream = mic.open(format=pyaudio.paInt16, channels=1, rate=16000, input=True, fr
 confirmation_words = ["yes", "yet", "es", "ya", "ok", "okay", "okey", "yeah", "sure", "correct", "is true",
                       "indeed", "positive"]
 denial_words = ["no", "nope", "know", "nah", "incorrect", "is not true", "negative"]
+skip_words = ["skip", "don't know", "i don't know", "not sure", ]
 
 
 def get_text_from_audio():

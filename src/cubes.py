@@ -2,10 +2,31 @@ import cozmo
 from src.base_logger import logger
 from src.speech_detection import get_text_from_audio
 
+cube = False
+
+def init_cubes(robot: cozmo.robot.Robot):
+
+    print(robot.world.connected_light_cubes)
+
+    cube1 = robot.world.get_light_cube(1)
+    cube2 = robot.world.get_light_cube(2)
+    cube3 = robot.world.get_light_cube(3)
+
+    if cube1:
+        cube1.set_lights(cozmo.lights.red_light)
+        return cube1
+    elif cube2:
+        cube2.set_lights(cozmo.lights.red_light)
+        return cube2
+    elif cube3:
+        cube3.set_lights(cozmo.lights.red_light)
+        return cube3
+    else:
+        return False
 
 def press_cube_to_speak(robot: cozmo.robot.Robot):
 
-    cube = robot.world.get_light_cube(1)
+    cube = robot.world.get_light_cube(3)
 
     if cube:
 
@@ -28,6 +49,7 @@ def press_cube_to_speak(robot: cozmo.robot.Robot):
 
 
 def main(robot: cozmo.robot.Robot):
+    # init_cubes(robot)
     press_cube_to_speak(robot)
 
 
