@@ -1,6 +1,7 @@
 import cozmo
 from src.base_logger import logger
 from src.speech_detection import get_text_from_audio
+from src.animations import play_random_listening_animation
 
 cube = False
 
@@ -36,6 +37,8 @@ def press_cube_to_speak(robot: cozmo.robot.Robot):
         if cube.wait_for_tap():
             logger.info("CUBE: has been tapped")
 
+            play_random_listening_animation(robot)
+
             logger.info("CUBE: light is blue")
             cube.set_lights(cozmo.lights.blue_light)
 
@@ -51,6 +54,7 @@ def press_cube_to_speak(robot: cozmo.robot.Robot):
 def main(robot: cozmo.robot.Robot):
     # init_cubes(robot)
     press_cube_to_speak(robot)
+
 
 
 if __name__ == "__main__":
