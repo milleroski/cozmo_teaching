@@ -4,8 +4,8 @@ This is a repository for my Bachelors thesis project using ANKI Cozmo for langua
 ## How to launch
 This script runs on Python UP TO PYTHON 3.7.7, IT WILL NOT RUN ON HIGHER PYTHON VERSIONS.    
 Go into the main directory of the project (a.k.a. cozmo_teaching)  
-Connect your phone through usb and activate adb by inserting  
-`adb usb`   
+Connect your phone through usb and activate adb by typing  
+`adb usb` into cmd     
 Afterwards run the program as a python module.  
 So for example, if you want to run cozmo_main.py, which is in src/english you run  
 `python -m src.english.cozmo_main`  
