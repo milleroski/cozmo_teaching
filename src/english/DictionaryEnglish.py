@@ -10,11 +10,12 @@ def add_element(dictionary, key, value):
 
 def get_synonyms(text: str):
     synonyms = text.split(" + ")
+    word = synonyms[0]
 
     for i, synonym in enumerate(synonyms):
         synonyms[i] = synonym.replace(" ", "")
 
-    return synonyms
+    return word, synonyms
 
 
 def load_dictionary():
@@ -33,13 +34,12 @@ def load_dictionary():
     for line in lines:
 
         line = line.split(" - ", 1)
-        words = get_synonyms(line[0])
-        word = words[0]
+        word, synonyms = get_synonyms(line[0])
 
         if len(line) > 1:  # Some words may not have definitions
             definition = line[1]
             add_element(this_dict, word, definition)
-            add_element(this_dict, word, words)
+            add_element(this_dict, word, synonyms)
 
     # Dictionary structure: {word: definition, synonyms}
     return this_dict
