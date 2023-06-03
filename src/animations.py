@@ -7,7 +7,6 @@ from src.base_logger import logger
 # Lists of good, bad, and neutral animations
 bad_animations = [63, 65]
 good_animations = [1, 7, 23, 26, 30, 31, 35, 50, 57, 68]
-listening_animations = [2, 3, 7, 18, 22]
 
 
 def play_random_bad_animation(robot: cozmo.robot.Robot):
@@ -28,14 +27,6 @@ def play_random_good_animation(robot: cozmo.robot.Robot):
         robot.anim_triggers[good_animations[number]],
         in_parallel=True, ignore_body_track=True).wait_for_completed()
     robot.set_head_angle(cozmo.robot.MAX_HEAD_ANGLE, in_parallel=True).wait_for_completed()
-
-
-def play_random_listening_animation(robot: cozmo.robot.Robot):
-    number = random.randint(0, 2)
-    logger.info("Listening animation number " + str(number))
-    robot.play_anim_trigger(
-        robot.anim_triggers[listening_animations[number]],
-        in_parallel=True, ignore_head_track=True).wait_for_completed()
 
 
 def sense_bump(robot: cozmo.robot.Robot, save_acc):
