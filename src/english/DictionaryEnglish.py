@@ -23,8 +23,11 @@ def load_dictionary():
     this_dict = {}
     lines = []
 
+    file_directory = os.path.dirname(__file__)
+    word_directory = os.path.join(file_directory, '../../text_files/EnglishWords.txt')
+
     # Read the dictionary text file and write it into list, also, get rid of unnecessary lines
-    with open(os.path.abspath("../../text_files/EnglishWords.txt"), encoding='utf8') as _:
+    with open(word_directory, encoding='utf8') as _:
         for line in _:
             line = line.strip()
             if line:
