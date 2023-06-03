@@ -74,6 +74,8 @@ def dialogue_recognizer(lines, robot):
 
             if recognizer.AcceptWaveform(data):
                 sentence = recognizer.Result()[14:-3]
+
+    cube.set_lights(cozmo.lights.red_light)
     stream.stop_stream()
     logger.info("Exiting talking loop...")
 
