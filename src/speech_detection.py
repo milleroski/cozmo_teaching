@@ -16,7 +16,7 @@ mic = pyaudio.PyAudio()
 stream = mic.open(format=pyaudio.paInt16, channels=1, rate=16000, input=True, frames_per_buffer=8192)
 
 # Word lists that are used for speech detection
-confirmation_words = ["yes", "yet", "es", "ya", "ok", "okay", "okey", "yeah", "sure", "correct", "is true",
+confirmation_words = ["yes", "yet", "ya", "ok", "okay", "okey", "yeah", "sure", "correct", "is true",
                       "indeed", "positive"]
 denial_words = ["no", "nope", "know", "nah", "incorrect", "is not true", "negative"]
 skip_words = ["skip", "don't know", "i don't know", "not sure", "tip", "hint", "clue"]
