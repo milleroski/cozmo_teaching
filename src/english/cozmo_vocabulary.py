@@ -5,8 +5,8 @@ from src.speech_detection import stream
 from src.utils import say_text, check_answer_list, three_random_words
 from src.speech_detection import confirmation_words, denial_words, skip_words
 from src.animations import play_random_good_animation, play_random_bad_animation, fist_bump
-from DictionaryEnglish import load_dictionary
-from cozmo_initiation import cozmo_initiation
+from src.english.DictionaryEnglish import load_dictionary
+from src.english.cozmo_initiation import cozmo_initiation
 from src.threads import start_threads
 from src.cubes import press_cube_to_speak
 

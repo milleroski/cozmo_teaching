@@ -48,7 +48,8 @@ def cozmo_initiation(robot: cozmo.robot.Robot):
         robot.set_robot_volume(0.7)
         logger.info("INIT: Preparation started...")
         logger.info("INIT: current battery voltage: " + str(robot.battery_voltage) + "V")
-
+        cube = robot.world.get_light_cube(3)
+        cube.set_lights(cozmo.lights.red_light)
         robot.set_head_angle(cozmo.robot.MAX_HEAD_ANGLE, in_parallel=True).wait_for_completed()
         robot.set_lift_height(0, in_parallel=True)
 

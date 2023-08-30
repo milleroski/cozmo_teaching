@@ -1,8 +1,8 @@
 import cozmo
 from src.base_logger import logger
-from cozmo_vocabulary import cozmo_vocabulary
-from cozmo_transition import cozmo_transition
-from cozmo_dialogue import cozmo_dialogue
+from src.english.cozmo_vocabulary import cozmo_vocabulary
+from src.english.cozmo_transition import cozmo_transition
+from src.english.cozmo_dialogue import cozmo_dialogue
 from src.animations import fist_bump
 from src.utils import say_text
 from src.threads import start_threads
