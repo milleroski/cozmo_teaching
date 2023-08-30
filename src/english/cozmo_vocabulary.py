@@ -100,7 +100,13 @@ def definition_exercise(robot):
                 logger.info("VOCAB: " + text)
 
                 # If the user isn't sure about the question, cozmo asks if the user wants a hint or to skip the question
-
+                if check_answer_list(text, skip_words):
+                    try_again_flag = True
+                    say_text("You're not sure? Do you want a clue?", robot)
+                    say_text("Say, yes, to get a clue, say, no, to skip the question.", robot)
+                    logger.info("VOCAB: User answering skip answer")
+                    continue
+                
                 # If the try_again_flag is set, make user stuck in the first part of the loop until he says yes or no
                 if try_again_flag:
 
