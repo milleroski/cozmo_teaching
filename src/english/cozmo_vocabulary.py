@@ -64,12 +64,12 @@ def give_hint(robot, score, answer: str):
 def definition_exercise(robot):
     logger.info("VOCAB: Start of vocabulary exercise...")
     # Initiate the dictionary and get the definitions + the length
-    # say_text(
-    #     "Today, we will do a vocabulary quiz. I will give you {} vocabulary questions that you need to answer".format(
-    #         str(dict_length)),
-    #     robot)
-    # say_text("These words should be familiar to you from your class with Mr. Tommy Janota.", robot)
-    # say_text("Ok, let's get started!", robot)
+    say_text(
+        "Today, we will do a vocabulary quiz. I will give you {} vocabulary questions that you need to answer".format(
+            str(dict_length)),
+        robot)
+    say_text("These words should be familiar to you from your class with Mr. Tommy Janota.", robot)
+    say_text("Ok, let's get started!", robot)
     try_again_flag = False
     counter = 0
     first_try_counter = 0
@@ -95,14 +95,6 @@ def definition_exercise(robot):
             if text:
 
                 logger.info("VOCAB: " + text)
-
-                # If the user isn't sure about the question, cozmo asks if the user wants a hint or to skip the question
-                if check_answer_list(text, skip_words):
-                    try_again_flag = True
-                    say_text("You're not sure? Do you want a clue?", robot)
-                    say_text("Say, yes, to get a clue, say, no, to skip the question.", robot)
-                    logger.info("VOCAB: User answering skip answer")
-                    continue
                 
                 # If the try_again_flag is set, make user stuck in the first part of the loop until he says yes or no
                 if try_again_flag:
@@ -111,14 +103,12 @@ def definition_exercise(robot):
 
                     # Add long string of confirmation and denial words
                     if check_answer_list(text, confirmation_words):
-                        print("in here")
                         try_again_flag = False
                         say_text("Question {}, {}".format(str(counter + 1), definition), robot)
                         score -= 1
                         give_hint(robot, score, word)
 
                     elif check_answer_list(text, denial_words):
-                        print("in here")
                         try_again_flag = False
                         say_text("The word is {}.".format(word), robot)
                         say_text("It means {}".format(definition), robot)
@@ -126,7 +116,8 @@ def definition_exercise(robot):
                     else:
                         say_text("Can you repeat that? Please answer with, yes, or, no.", robot)
                     continue
-
+                    
+                # If the user isn't sure about the question, cozmo asks if the user wants a hint or to skip the question
                 if check_answer_list(text, skip_words):
                     try_again_flag = True
                     say_text("Do you want a clue?", robot)
