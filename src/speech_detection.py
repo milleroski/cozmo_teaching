@@ -20,6 +20,7 @@ confirmation_words = ["yes", "yet", "ya", "ok", "okay", "okey", "yeah", "sure", 
                       "indeed", "positive"]
 denial_words = ["no", "nope", "know", "nah", "incorrect", "is not true", "negative"]
 skip_words = ["skip", "don't know", "i don't know", "not sure", "tip", "hint", "clue"]
+repeat_words = ["repeat", "repeating", "come again", "say that again"]
 
 
 def get_text_from_audio():
