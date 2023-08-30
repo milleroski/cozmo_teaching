@@ -16,9 +16,6 @@ dictionary = load_dictionary()
 dict_keys = list(dictionary.keys())
 dict_length = len(dictionary)
 
-
-# TODO: Tidy this up a bit, don't do two while loops for no reason other than laziness
-# TODO: SKip the question or ask
 def intended_answer(robot, answer: str):
     say_text("I think you said: {}. Is that your final answer?".format(answer), robot)
 
