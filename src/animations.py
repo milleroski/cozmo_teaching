@@ -13,7 +13,6 @@ def play_random_bad_animation(robot: cozmo.robot.Robot):
 
     number = random.randint(0, 1)
     logger.info("Bad animation number " + str(number))
-
     robot.play_anim_trigger(
         robot.anim_triggers[bad_animations[number]],
         in_parallel=True, ignore_body_track=True).wait_for_completed()
@@ -67,7 +66,7 @@ def fist_bump(robot: cozmo.robot.Robot):
 
 
 def main(robot: cozmo.robot.Robot):
-    epic = "epic"
+    play_random_good_animation(robot)
 
 
 if __name__ == "__main__":

@@ -16,6 +16,20 @@ dictionary = load_dictionary()
 dict_keys = list(dictionary.keys())
 dict_length = len(dictionary)
 
+def intended_answer(robot, answer: str):
+    say_text("I think you said: {}. Is that your final answer?".format(answer), robot)
+
+    while True:
+        text = press_cube_to_speak(robot)
+
+        if check_answer_list(text, confirmation_words):
+            return True
+        elif check_answer_list(text, denial_words):
+            say_text("I'm sorry. Can you repeat what you meant?", robot)
+            return False
+        else:
+            continue
+
 
 def give_hint(robot, score, answer: str):
     logger.info("VOCAB: Giving hint... Score = {}".format(score))
@@ -81,15 +95,7 @@ def definition_exercise(robot):
             if text:
 
                 logger.info("VOCAB: " + text)
-
-                # If the user isn't sure about the question, cozmo asks if the user wants a hint or to skip the question
-                if check_answer_list(text, skip_words):
-                    try_again_flag = True
-                    say_text("You're not sure? Do you want a clue?", robot)
-                    say_text("Say, yes, to get a clue, say, no, to skip the question.", robot)
-                    logger.info("VOCAB: User answering skip answer")
-                    continue
-
+                
                 # If the try_again_flag is set, make user stuck in the first part of the loop until he says yes or no
                 if try_again_flag:
 
@@ -109,6 +115,19 @@ def definition_exercise(robot):
                         break
                     else:
                         say_text("Can you repeat that? Please answer with, yes, or, no.", robot)
+                    continue
+                    
+                # If the user isn't sure about the question, cozmo asks if the user wants a hint or to skip the question
+                if check_answer_list(text, skip_words):
+                    try_again_flag = True
+                    say_text("Do you want a clue?", robot)
+                    say_text("Say, yes to get a clue, say, no to skip the question.", robot)
+                    logger.info("VOCAB: User answering skip answer")
+                    continue
+
+                if intended_answer(robot, text):
+                    pass
+                else:
                     continue
 
                 correct = check_answer_list(text.replace(" ", ""), synonyms)
