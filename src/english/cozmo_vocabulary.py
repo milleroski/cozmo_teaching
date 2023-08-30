@@ -3,7 +3,7 @@ import random
 from src.base_logger import logger
 from src.speech_detection import stream
 from src.utils import say_text, check_answer_list, three_random_words
-from src.speech_detection import confirmation_words, denial_words, skip_words
+from src.speech_detection import confirmation_words, denial_words, skip_words, repeat_words
 from src.animations import play_random_good_animation, play_random_bad_animation, fist_bump
 from src.english.DictionaryEnglish import load_dictionary
 from src.english.cozmo_initiation import cozmo_initiation
@@ -116,7 +116,13 @@ def definition_exercise(robot):
                     else:
                         say_text("Can you repeat that? Please answer with, yes, or, no.", robot)
                     continue
-                    
+
+                #The user can ask Cozmo to repeat the question.
+                if check_answer_list(text, repeat_words):
+                    say_text("Sure.", robot)
+                    say_text("Question {}, {}".format(str(counter + 1), definition), robot)
+                    continue
+
                 # If the user isn't sure about the question, cozmo asks if the user wants a hint or to skip the question
                 if check_answer_list(text, skip_words):
                     try_again_flag = True
