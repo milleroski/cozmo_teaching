@@ -13,19 +13,23 @@ def play_random_bad_animation(robot: cozmo.robot.Robot):
 
     number = random.randint(0, 1)
     logger.info("Bad animation number " + str(number))
+    robot.set_lift_height(1, in_parallel=True).wait_for_completed()
     robot.play_anim_trigger(
         robot.anim_triggers[bad_animations[number]],
         in_parallel=True, ignore_body_track=True).wait_for_completed()
     robot.set_head_angle(cozmo.robot.MAX_HEAD_ANGLE, in_parallel=True).wait_for_completed()
+    robot.set_lift_height(0, in_parallel=True).wait_for_completed()
 
 
 def play_random_good_animation(robot: cozmo.robot.Robot):
     number = random.randint(0, 9)
     logger.info("ANIM: Good animation number " + str(number))
+    robot.set_lift_height(1, in_parallel=True).wait_for_completed()
     robot.play_anim_trigger(
         robot.anim_triggers[good_animations[number]],
         in_parallel=True, ignore_body_track=True).wait_for_completed()
     robot.set_head_angle(cozmo.robot.MAX_HEAD_ANGLE, in_parallel=True).wait_for_completed()
+    robot.set_lift_height(0, in_parallel=True).wait_for_completed()
 
 
 def sense_bump(robot: cozmo.robot.Robot, save_acc):
