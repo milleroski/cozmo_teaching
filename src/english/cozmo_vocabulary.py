@@ -18,21 +18,7 @@ dict_length = len(dictionary)
 
 
 # TODO: Tidy this up a bit, don't do two while loops for no reason other than laziness
-# TODO: SKip the question or ask
-def intended_answer(robot, answer: str):
-    say_text("I think you said: {}. Is that your final answer?".format(answer), robot)
-
-    while True:
-        text = press_cube_to_speak(robot)
-
-        if check_answer_list(text, confirmation_words):
-            return True
-        elif check_answer_list(text, denial_words):
-            say_text("I'm sorry. Can you repeat what you meant?", robot)
-            return False
-        else:
-            continue
-
+# TODO: Skip the question or ask
 
 def give_hint(robot, score, answer: str):
     logger.info("VOCAB: Giving hint... Score = {}".format(score))
@@ -86,6 +72,11 @@ def definition_exercise(robot):
         first_try = True
         definition = dictionary.get(dict_keys[counter])[0]
         synonyms = dictionary.get(dict_keys[counter])[1]
+
+        # The answer strings should have no spaces
+        for i in range(synonyms):
+            synonyms[i] = synonyms[i].replace(" ", "")
+
         word = dict_keys[counter]
 
         say_text("Question {}, {}".format(str(counter + 1), definition), robot)
@@ -131,21 +122,16 @@ def definition_exercise(robot):
                     logger.info("VOCAB: User answering skip answer")
                     continue
 
-                if intended_answer(robot, text):
-                    pass
-                else:
-                    continue
-
                 correct = check_answer_list(text.replace(" ", ""), synonyms)
 
                 if correct:
                     logger.info("VOCAB: Correct answer: {} {}".format(text, word))
-                    say_text("Your answer {}. Is correct, good job!".format(text), robot)
+                    say_text("Your answer is correct, good job!", robot)
                     play_random_good_animation(robot)
                 else:
                     logger.info("VOCAB: Incorrect answer: {} {}".format(text, word))
                     first_try = False
-                    say_text("Your answer {}, is not correct".format(text), robot)
+                    say_text("Your answer is not correct".format(text), robot)
                     play_random_bad_animation(robot)
                     try_again_flag = True
                     say_text("Would you like to try again?", robot)
