@@ -34,6 +34,7 @@ confirmation_words = ["yes", "yet", "ya", "ok", "okay", "okey", "yeah", "sure", 
                       "indeed", "positive"]
 denial_words = ["no", "nope", "know", "nah", "incorrect", "is not true", "negative"]
 skip_words = ["skip", "don't know", "i don't know", "not sure", "tip", "hint", "clue", "skipped"]
+repeat_words = ["repeat the question", "repeat", "excuse me", "come again", "repeating", "understand", "pardon", "pardon me"]
 
 grammar.extend(confirmation_words)
 grammar.extend(denial_words)
