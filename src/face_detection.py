@@ -33,7 +33,7 @@ def follow_face(robot: cozmo.robot.Robot, condition):
 
                 # find a visible face, timeout if nothing found after a short while
                 try:
-                    face_to_follow = robot.world.wait_for_observed_face(timeout=30)
+                    face_to_follow = robot.world.wait_for_observed_face(timeout=10)
                 except asyncio.TimeoutError:
                     if robot.lift_ratio < 0.75:
                         turn_action = robot.turn_in_place(degrees(45), in_parallel=True)
