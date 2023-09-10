@@ -33,7 +33,7 @@ def play_random_good_animation(robot: cozmo.robot.Robot):
 
 
 def sense_bump(robot: cozmo.robot.Robot, save_acc):
-    sensibility = 1000
+    sensibility = 2000
     if save_acc._x > robot.accelerometer._x + sensibility or save_acc._x < robot.accelerometer._x - sensibility:
         return True
     if save_acc._y > robot.accelerometer._y + sensibility or save_acc._y < robot.accelerometer._y - sensibility:
